@@ -47,6 +47,30 @@ rawToChar(hi)
 #> [1] "Hello world"
 ```
 
+``` r
+f <- system.file("examples/fib.wasm", package = "wasmrrr")
+instance <- instantiate(f)
+instance$exports$fib(20)
+#> [1] 6765
+
+fib <- function(n) {
+  if (n < 2) return(n);
+  fib(n - 1) + fib(n - 2);
+}
+
+microbenchmark::microbenchmark(
+  instance$exports$fib(20),
+  fib(20)
+)
+#> Unit: microseconds
+#>                      expr      min        lq     mean   median         uq
+#>  instance$exports$fib(20)   77.393   84.3825  143.687  144.832   167.9445
+#>                   fib(20) 7885.827 8107.5640 9610.634 8783.537 10451.5935
+#>        max neval
+#>    761.549   100
+#>  22920.707   100
+```
+
 ## Inspiration and References
 
   - [wasmer Python](https://github.com/wasmerio/python-ext-wasm) -
@@ -61,9 +85,9 @@ rawToChar(hi)
 
   - No import support yet - any wasm file with imports does not work
   - No Table
-  - Bug fixes
-  - Read more about the desing of wasm 🙈
+  - bug fixes
+  - Read more about the design of wasm 🙈
 
 ## License
 
-\*IT ajust like wasmer.
+MIT just like wasmer.

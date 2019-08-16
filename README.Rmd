@@ -77,8 +77,8 @@ microbenchmark::microbenchmark(
 
 * No import support yet - any wasm file with imports does not work
 * No Table
-* Bug fixes like segfaults
-* Read more about the desing of wasm 🙈
+* bug fixes
+* Read more about the design of wasm 🙈
 
 ## License
 
