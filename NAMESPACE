@@ -2,4 +2,6 @@
 
 export(instantiate)
 import(Rcpp)
+importFrom(methods,new)
+importFrom(stats,setNames)
 useDynLib(wasmrrr, .registration = TRUE)

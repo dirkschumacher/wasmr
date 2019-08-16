@@ -3,6 +3,8 @@
 #' @param path the path to the binary wasm file
 #'
 #' @export
+#' @importFrom methods new
+#' @importFrom stats setNames
 instantiate <- function(path) {
   stopifnot(file.exists(path))
   f <- file(path, "rb")

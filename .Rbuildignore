@@ -5,3 +5,4 @@
 ^LICENSE\.md$
 ^src/myrustlib/target
 ^\.travis\.yml$
+^appveyor\.yml$
