@@ -1,0 +1,11 @@
+[package]
+publish = false
+name = "myrustlib"
+version = "0.1.0"
+authors = ["Dirk Schumacher <mail@dirk-schumacher.net>"]
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+wasmer-runtime-c-api = "0.6.0"

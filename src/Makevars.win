@@ -1,0 +1,14 @@
+TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
+LIBDIR = myrustlib/target/$(TARGET)/release
+STATLIB = $(LIBDIR)/myrustlib.lib
+PKG_LIBS = -L$(LIBDIR) -lmyrustlib -lws2_32 -ladvapi32 -luserenv
+
+#all: clean
+
+$(SHLIB): $(STATLIB)
+
+$(STATLIB):
+  cargo build --release -p wasmer-runtime-c-api --manifest-path=myrustlib/Cargo.toml
+
+#clean:
+#	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) myrustlib/target

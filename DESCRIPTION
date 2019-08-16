@@ -1,0 +1,18 @@
+Type: Package
+Package: wasmrrr
+Title: Execute WebAssembly from R using wasmer
+Version: 0.1.0.9000
+Authors@R: c(person("Dirk", "Schumacher", , "mail@dirk-schumacher.net", c("cre", "aut")),
+  person("Wasmer, Inc. and its affiliates", role = "cph", comment = "The included header files of the wasmer-c-api"))
+Description: Wasmer bindings.
+License: MIT + file LICENSE
+Imports: 
+    Rcpp
+Suggests: 
+    testthat (>= 2.1.0)
+LinkingTo: 
+    Rcpp
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+SystemRequirements: C++11
