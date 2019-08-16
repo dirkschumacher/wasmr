@@ -14,9 +14,9 @@ The goal of wasmrrr is to run
 code from R using the [wasmer](https://wasmer.io/) runtime.
 
 This is a super early version with bugs and missing features. It is a
-first protytpe for me to learn more about WebAssembly, but will evolve
+first prototype for me to learn more about WebAssembly, but will evolve
 hopefully into something stable. It has the appropriate code quality of
-a protytpe :).
+a prototype :).
 
 ## Installation
 
@@ -63,12 +63,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min        lq     mean   median         uq
-#>  instance$exports$fib(20)   77.393   84.3825  143.687  144.832   167.9445
-#>                   fib(20) 7885.827 8107.5640 9610.634 8783.537 10451.5935
+#>                      expr      min        lq      mean   median         uq
+#>  instance$exports$fib(20)   76.423   79.9405  134.6831   91.756   167.7595
+#>                   fib(20) 7904.662 8149.7310 9696.9050 8741.592 10578.1010
 #>        max neval
-#>    761.549   100
-#>  22920.707   100
+#>    461.343   100
+#>  21856.367   100
 ```
 
 ## Inspiration and References

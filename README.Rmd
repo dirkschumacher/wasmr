@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 The goal of wasmrrr is to run [WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly/Concepts) code from R using the [wasmer](https://wasmer.io/) runtime.
 
-This is a super early version with bugs and missing features. It is a first protytpe for me to learn more about WebAssembly, but will evolve hopefully into something stable. It has the appropriate code quality of a protytpe :).
+This is a super early version with bugs and missing features. It is a first prototype for me to learn more about WebAssembly, but will evolve hopefully into something stable. It has the appropriate code quality of a prototype :).
 
 ## Installation
 
