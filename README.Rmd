@@ -27,23 +27,23 @@ This is a super early version with bugs and missing features. It is a first prot
 ## Installation
 
 ``` r
-remotes::install_github("dirkschumacher/wasmerrr")
+remotes::install_github("dirkschumacher/wasmr")
 ```
 
 ## Example
 
 ```{r example}
-library(wasmrrr)
+library(wasmr)
 ```
 
 ```{r}
-f <- system.file("examples/sum.wasm", package = "wasmrrr")
+f <- system.file("examples/sum.wasm", package = "wasmr")
 instance <- instantiate(f)
 instance$exports$sum(10, 20)
 ```
 
 ```{r}
-f <- system.file("examples/hello.wasm", package = "wasmrrr")
+f <- system.file("examples/hello.wasm", package = "wasmr")
 instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
 (hi <- instance$memory$get_memory_view(memory_pointer))
@@ -51,7 +51,7 @@ rawToChar(hi)
 ```
 
 ```{r}
-f <- system.file("examples/fib.wasm", package = "wasmrrr")
+f <- system.file("examples/fib.wasm", package = "wasmr")
 instance <- instantiate(f)
 instance$exports$fib(20)
 

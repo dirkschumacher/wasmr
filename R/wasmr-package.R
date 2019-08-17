@@ -1,5 +1,5 @@
 ## usethis namespace: start
-#' @useDynLib wasmrrr, .registration = TRUE
+#' @useDynLib wasmr, .registration = TRUE
 #' @import Rcpp
 ## usethis namespace: end
 NULL
