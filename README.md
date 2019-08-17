@@ -26,6 +26,9 @@ a prototype :).
 remotes::install_github("dirkschumacher/wasmr")
 ```
 
+Also make sure to have a very recent rust compiler. The best way to
+install the rust toolchain is to use [rustup](https://rustup.rs/).
+
 ## Example
 
 ``` r
@@ -65,12 +68,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min         lq       mean    median
-#>  instance$exports$fib(20)   84.074   113.5975   196.6396   170.139
-#>                   fib(20) 7960.334 10164.3615 18258.4025 14368.676
-#>          uq       max neval
-#>    200.0295  1146.086   100
-#>  22483.9245 86060.337   100
+#>                      expr      min        lq      mean   median       uq
+#>  instance$exports$fib(20)   77.045   87.1395  164.5835  161.329   170.29
+#>                   fib(20) 7859.513 8116.1275 9571.9772 8688.146 10292.45
+#>        max neval
+#>    979.158   100
+#>  22375.085   100
 ```
 
 ## Memory

@@ -30,6 +30,8 @@ This is a super early version with bugs and missing features. It is a first prot
 remotes::install_github("dirkschumacher/wasmr")
 ```
 
+Also make sure to have a very recent rust compiler. The best way to install the rust toolchain is to use [rustup](https://rustup.rs/).
+
 ## Example
 
 ```{r example}
