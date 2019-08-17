@@ -65,12 +65,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min       lq      mean    median        uq
-#>  instance$exports$fib(20)   76.243   82.042  152.7491  126.4345   165.972
-#>                   fib(20) 7885.983 8055.417 9474.7272 8485.8605 10227.392
-#>        max neval
-#>    825.559   100
-#>  17291.877   100
+#>                      expr      min         lq       mean    median
+#>  instance$exports$fib(20)   84.074   113.5975   196.6396   170.139
+#>                   fib(20) 7960.334 10164.3615 18258.4025 14368.676
+#>          uq       max neval
+#>    200.0295  1146.086   100
+#>  22483.9245 86060.337   100
 ```
 
 ## Memory
@@ -103,6 +103,12 @@ instance$memory$get_memory_length()
   - No Table
   - bug fixes
   - Read more about the design of wasm 🙈
+
+## Contribute
+
+While this is work in progress, the best way to contribute is to test
+the package and write/comment on issues. Before sending a PR it would
+great to post an issue first to discuss.
 
 ## License
 
