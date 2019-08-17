@@ -136,6 +136,13 @@ public:
     return wasmer_memory_length(memory);
   }
 
+  void grow_memory(uint32_t delta) {
+    wasmer_result_t res = wasmer_memory_grow(memory, delta);
+    if (res != wasmer_result_t::WASMER_OK) {
+      Rcpp::stop(last_error());
+    }
+  }
+
   Rcpp::List get_exported_functions() {
     std::vector<Rcpp::List> ret;
     auto as_int = [](const wasmer_value_tag& x) { return (int) x; };
@@ -241,6 +248,7 @@ RCPP_MODULE(wasm_module) {
   .method("get_exported_functions", &WasmModule::get_exported_functions)
   .method("get_memory_length", &WasmModule::get_memory_length)
   .method("get_memory_view", &WasmModule::get_memory_view)
+  .method("grow_memory", &WasmModule::grow_memory)
   .finalizer(&wasm_finalize)
   ;
 }
