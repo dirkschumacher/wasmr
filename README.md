@@ -7,6 +7,8 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Travis build
+status](https://travis-ci.org/dirkschumacher/wasmrrr.svg?branch=master)](https://travis-ci.org/dirkschumacher/wasmrrr)
 <!-- badges: end -->
 
 The goal of wasmrrr is to run
@@ -21,24 +23,24 @@ a prototype :).
 ## Installation
 
 ``` r
-remotes::install_github("dirkschumacher/wasmerrr")
+remotes::install_github("dirkschumacher/wasmr")
 ```
 
 ## Example
 
 ``` r
-library(wasmrrr)
+library(wasmr)
 ```
 
 ``` r
-f <- system.file("examples/sum.wasm", package = "wasmrrr")
+f <- system.file("examples/sum.wasm", package = "wasmr")
 instance <- instantiate(f)
 instance$exports$sum(10, 20)
 #> [1] 30
 ```
 
 ``` r
-f <- system.file("examples/hello.wasm", package = "wasmrrr")
+f <- system.file("examples/hello.wasm", package = "wasmr")
 instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
 (hi <- instance$memory$get_memory_view(memory_pointer))
@@ -48,7 +50,7 @@ rawToChar(hi)
 ```
 
 ``` r
-f <- system.file("examples/fib.wasm", package = "wasmrrr")
+f <- system.file("examples/fib.wasm", package = "wasmr")
 instance <- instantiate(f)
 instance$exports$fib(20)
 #> [1] 6765
@@ -63,12 +65,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min        lq      mean   median         uq
-#>  instance$exports$fib(20)   76.423   79.9405  134.6831   91.756   167.7595
-#>                   fib(20) 7904.662 8149.7310 9696.9050 8741.592 10578.1010
+#>                      expr      min        lq      mean   median        uq
+#>  instance$exports$fib(20)   76.448   88.2195  140.2379  152.939   170.894
+#>                   fib(20) 7855.228 8070.1335 9591.8595 8828.541 10293.171
 #>        max neval
-#>    461.343   100
-#>  21856.367   100
+#>    358.625   100
+#>  18807.205   100
 ```
 
 ## Inspiration and References
