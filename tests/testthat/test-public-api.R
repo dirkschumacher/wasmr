@@ -16,3 +16,11 @@ test_that("complex loop", {
   res <- instance$exports$fib(20)
   expect_equal(res, 6765)
 })
+
+test_that("grow memory", {
+  instance <- instantiate("../../inst/examples/hello.wasm")
+  len <- instance$memory$get_memory_length()
+  instance$memory$grow(1)
+  len2 <- instance$memory$get_memory_length()
+  expect_true(len < len2)
+})

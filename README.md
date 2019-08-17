@@ -65,12 +65,26 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min        lq      mean   median        uq
-#>  instance$exports$fib(20)   76.448   88.2195  140.2379  152.939   170.894
-#>                   fib(20) 7855.228 8070.1335 9591.8595 8828.541 10293.171
+#>                      expr      min       lq      mean    median        uq
+#>  instance$exports$fib(20)   76.243   82.042  152.7491  126.4345   165.972
+#>                   fib(20) 7885.983 8055.417 9474.7272 8485.8605 10227.392
 #>        max neval
-#>    358.625   100
-#>  18807.205   100
+#>    825.559   100
+#>  17291.877   100
+```
+
+## Memory
+
+``` r
+f <- system.file("examples/fib.wasm", package = "wasmr")
+instance <- instantiate(f)
+instance$memory$get_memory_length()
+#> [1] 2
+
+# grow the number of pages
+instance$memory$grow(1)
+instance$memory$get_memory_length()
+#> [1] 3
 ```
 
 ## Inspiration and References

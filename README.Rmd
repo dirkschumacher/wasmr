@@ -66,6 +66,18 @@ microbenchmark::microbenchmark(
 )
 ```
 
+## Memory
+
+```{r}
+f <- system.file("examples/fib.wasm", package = "wasmr")
+instance <- instantiate(f)
+instance$memory$get_memory_length()
+
+# grow the number of pages
+instance$memory$grow(1)
+instance$memory$get_memory_length()
+```
+
 
 ## Inspiration and References
 

@@ -39,12 +39,19 @@ instantiate <- function(path) {
       pointer <- as.integer(pointer)
       stopifnot(pointer > 0)
       mod$get_memory_view(pointer)
+    },
+    grow = function(delta) {
+      stopifnot(is.numeric(delta))
+      mod$grow_memory(as.integer(delta))
+    },
+    get_memory_length = function() {
+      mod$get_memory_length()
     }
   )
   structure(
     list(
       exports = exports,
       memory = memory
-    ), class = "wasmerrr_instance"
+    ), class = "wasmr_instance"
   )
 }
