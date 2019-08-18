@@ -59,8 +59,8 @@ instance$exports$fib(20)
 #> [1] 6765
 
 fib <- function(n) {
-  if (n < 2) return(n);
-  fib(n - 1) + fib(n - 2);
+  if (n < 2) return(n)
+  fib(n - 1) + fib(n - 2)
 }
 
 microbenchmark::microbenchmark(
@@ -68,12 +68,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min        lq      mean   median       uq
-#>  instance$exports$fib(20)   77.045   87.1395  164.5835  161.329   170.29
-#>                   fib(20) 7859.513 8116.1275 9571.9772 8688.146 10292.45
-#>        max neval
-#>    979.158   100
-#>  22375.085   100
+#>                      expr      min        lq       mean   median
+#>  instance$exports$fib(20)   79.486   93.3555   164.3562  163.860
+#>                   fib(20) 7967.592 8342.5465 10052.8656 9480.994
+#>          uq      max neval
+#>    188.2435   471.73   100
+#>  11050.3475 17489.67   100
 ```
 
 ## Memory

@@ -8,7 +8,8 @@ Description: Wasmer bindings.
 License: MIT + file LICENSE
 Imports: 
     Rcpp,
-    methods
+    methods,
+    R6
 Suggests: 
     testthat (>= 2.1.0)
 LinkingTo: 
@@ -19,3 +20,6 @@ RoxygenNote: 6.1.1
 SystemRequirements: C++11
 URL: https://github.com/dirkschumacher/wasmrrr
 BugReports: https://github.com/dirkschumacher/wasmrrr/issues
+Collate: 
+    'instance-class.R'
+    'wasmr-package.R'
