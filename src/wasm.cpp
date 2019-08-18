@@ -122,7 +122,7 @@ public:
   }
 
   uint32_t get_memory_length() {
-    return wasmer_memory_length(instance.get_wasmer_memory());
+    return instance.get_memory_length();
   }
 
   void grow_memory(uint32_t delta) {

@@ -24,6 +24,8 @@ public:
   void instantiate();
   void set_module(Module module);
   const std::vector<InstanceExportFunction>& get_exported_functions() const;
+
+  uint32_t get_memory_length() const;
   wasmer_memory_t* get_wasmer_memory() const;
   wasmer_exports_t* get_wasmer_exports() const;
   void destroy();

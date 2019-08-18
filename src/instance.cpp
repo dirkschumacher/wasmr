@@ -15,6 +15,10 @@ namespace wasmr {
     }
   }
 
+  uint32_t Instance::get_memory_length() const {
+    return wasmer_memory_length(memory);
+  }
+
   wasmer_memory_t* Instance::get_wasmer_memory() const {
     return memory;
   }
