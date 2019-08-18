@@ -11,7 +11,7 @@ namespace wasmr {
   void Instance::destroy() {
     if (instance) {
       wasmer_instance_destroy(instance);
-      // TODO destroy other stuff
+      module.destroy();
     }
   }
 

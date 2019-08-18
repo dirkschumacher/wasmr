@@ -13,13 +13,13 @@ public:
  // TODO: figure out to release everything without the segfault
   void finalize() {
     instance.destroy();
-    module.destroy();
   }
 
   void instantiate(Rcpp::RawVector bytes) {
     if (bytes.size() <= 0) {
       Rcpp::stop("You need at least one byte");
     }
+    wasmr::Module module;
     module.compile(&bytes[0], bytes.size());
     instance.set_module(std::move(module));
     instance.instantiate();
@@ -155,7 +155,6 @@ public:
   }
 
 private:
-  wasmr::Module module;
   wasmr::Instance instance;
 };
 
