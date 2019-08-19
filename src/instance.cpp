@@ -76,18 +76,58 @@ namespace wasmr {
         fun.returns_arity = returns_arity;
         fun.returns_data_types = returns_data_types;
 
-        exported_functions.push_back(fun);
+        exported_functions[fun.name] = fun;
       }
       if (kind == wasmer_import_export_kind::WASM_MEMORY) {
         wasmer_result_t export_to_memory_result = wasmer_export_to_memory(exp, &memory);
         if (export_to_memory_result != wasmer_result_t::WASMER_OK) {
-          throw std::logic_error(helpers::last_error());
+          throw std::runtime_error(helpers::last_error());
         }
       }
     }
   }
 
-  const std::vector<InstanceExportFunction>& Instance::get_exported_functions() const {
-    return exported_functions;
+  std::vector<InstanceExportFunction> Instance::get_exported_functions() const {
+    std::vector<InstanceExportFunction> ret;
+    for (const auto& key_val : exported_functions) {
+      ret.push_back(key_val.second);
+    }
+    return ret;
   }
+
+  const InstanceExportFunction& Instance::get_exported_function(std::string name) {
+    // TODO: check for missing
+    return exported_functions.at(name);
+  };
+
+  std::vector<wasmer_value_t> Instance::call_exported_function(std::string fun_name, std::vector<wasmer_value_t> params) {
+    const wasmr::InstanceExportFunction& fun = Instance::get_exported_function(fun_name);
+    std::vector<wasmer_value_t> results(fun.returns_arity);
+    wasmer_export_t* exp = wasmer_exports_get(exports, fun.idx);
+    wasmer_import_export_kind kind = wasmer_export_kind(exp);
+    if (kind != wasmer_import_export_kind::WASM_FUNCTION) {
+      throw std::runtime_error("The function you are calling is not an actual function");
+    }
+    const wasmer_export_func_t* wasm_func = wasmer_export_to_func(exp);
+    wasmer_result_t call_result;
+    if (fun.params_arity == 0) {
+      // TODO: need to figure out that works with std::vector
+      wasmer_value_t empty_params[] = {};
+      call_result = wasmer_export_func_call(wasm_func,
+                                            empty_params,
+                                            0,
+                                            results.data(),
+                                            fun.returns_arity);
+    } else {
+      call_result = wasmer_export_func_call(wasm_func,
+                                            params.data(),
+                                            fun.params_arity,
+                                            results.data(),
+                                            fun.returns_arity);
+    }
+    if (call_result != wasmer_result_t::WASMER_OK) {
+      throw std::runtime_error(wasmr::helpers::last_error());
+    }
+    return results;
+  };
 }

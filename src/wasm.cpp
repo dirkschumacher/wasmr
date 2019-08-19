@@ -26,14 +26,7 @@ public:
   }
 
   Rcpp::List call_exported_function(std::string fun_name, Rcpp::List arguments) {
-    auto exported_functions = instance.get_exported_functions();
-    auto fun_it = std::find_if(
-      exported_functions.begin(), exported_functions.end(),
-      [&fun_name](const wasmr::InstanceExportFunction& x) { return x.name == fun_name; });
-    if (fun_it == exported_functions.end()) {
-      Rcpp::stop("Function not found");
-    }
-    const wasmr::InstanceExportFunction& fun = *fun_it;
+    const wasmr::InstanceExportFunction& fun = instance.get_exported_function(fun_name);
     if (arguments.length() != fun.params_arity) {
       Rcpp::stop("The number of arguments is not correct");
     }
@@ -61,32 +54,8 @@ public:
       params.push_back(param);
     }
 
-    std::vector<wasmer_value_t> results(fun.returns_arity);
-    wasmer_export_t* exp = wasmer_exports_get(instance.get_wasmer_exports(), fun.idx);
-    wasmer_import_export_kind kind = wasmer_export_kind(exp);
-    if (kind != wasmer_import_export_kind::WASM_FUNCTION) {
-      Rcpp::stop("The function you are calling is not an actual function");
-    }
-    const wasmer_export_func_t* wasm_func = wasmer_export_to_func(exp);
-    wasmer_result_t call_result;
-    if (fun.params_arity == 0) {
-      // TODO: need to figure out that works with std::vector
-      wasmer_value_t empty_params[] = {};
-      call_result = wasmer_export_func_call(wasm_func,
-                                            empty_params,
-                                            0,
-                                            results.data(),
-                                            fun.returns_arity);
-    } else {
-      call_result = wasmer_export_func_call(wasm_func,
-                                            params.data(),
-                                            fun.params_arity,
-                                            results.data(),
-                                            fun.returns_arity);
-    }
-    if (call_result != wasmer_result_t::WASMER_OK) {
-      Rcpp::stop(wasmr::helpers::last_error());
-    }
+    auto results = instance.call_exported_function(fun_name, params);
+
     Rcpp::List ret;
     for (int i = 0; i < fun.returns_arity; i++) {
       const auto& res = results[i];
