@@ -31,7 +31,7 @@ namespace wasmr {
     wasmer_module_t* wasmer_mod = module.get_wasmer_module();
     auto compile_result = wasmer_module_instantiate(wasmer_mod, &instance, imports, 0);
     if (compile_result != wasmer_result_t::WASMER_OK) {
-      throw std::logic_error(helpers::last_error());
+      throw std::runtime_error(helpers::last_error());
     }
     Instance::init_exports_and_memory();
   };
