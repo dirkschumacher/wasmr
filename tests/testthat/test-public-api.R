@@ -24,3 +24,20 @@ test_that("grow memory", {
   len2 <- instance$memory$get_memory_length()
   expect_true(len < len2)
 })
+
+test_that("import functions",{
+  imports <- list(
+    env = list(
+      add = typed_function(
+        function(a, b) {
+          a + b
+        },
+        param_types = c("F64", "F64"),
+        return_type = c("F64")
+      )
+    )
+  )
+  instance <- instantiate("../../inst/examples/sum_import.wasm", imports)
+  res <- instance$exports$sum(1, 5)
+  expect_equal(res, 6 + 42)
+})

@@ -1,31 +1,30 @@
 #' Instantiate a WebAssembly module
 #'
 #' @param path the path to the binary wasm file
+#' @param imports a named list of import function
 #'
 #' @export
 #' @importFrom methods new
 #' @importFrom stats setNames
-instantiate <- function(path) {
-  Instance$new(path)
+#' @include RcppExports.R
+instantiate <- function(path, imports = list()) {
+  Instance$new(path, imports)
 }
 
 Instance <- R6::R6Class(
   "Instance",
   portable = FALSE,
   public = list(
-    initialize = function(path) {
+    initialize = function(path, imports = list()) {
       stopifnot(file.exists(path))
+      stopifnot(is.list(imports))
       f <- file(path, "rb")
       bytes <- readBin(f, what = "raw", n = file.size(path))
       close(f)
-      private$wasm_instance_module <- new(WasmModule)
-      private$wasm_instance_module$instantiate(bytes)
-
+      private$wasm_instance_module <- wasm_init_module()
+      wasm_instantiate(private$wasm_instance_module, bytes, imports)
       private$exports_list <- private$build_exports()
       private$memory_list <- private$build_memory()
-    },
-    finalize = function() {
-      # TODO: might need to do some deallocation here
     }
   ),
   active = list(
@@ -48,8 +47,11 @@ Instance <- R6::R6Class(
     wasm_instance_module = NULL,
     exports_list = list(),
     memory_list = list(),
+    finalize = function() {
+      wasm_finalize_module(private$wasm_instance_module)
+    },
     build_exports = function() {
-      funs <- private$wasm_instance_module$get_exported_functions()
+      funs <- wasm_get_exported_functions(private$wasm_instance_module)
       fun_names <- vapply(funs, function(x) x$name, character(1L))
       exports <- lapply(funs, function(x) {
         fun <- x
@@ -59,7 +61,7 @@ Instance <- R6::R6Class(
         }
         ret_fun <- function() {
           args <- do.call("list", lapply(fun_parameters, as.name))
-          res <- private$wasm_instance_module$call_exported_function(fun$name, args)
+          res <- wasm_call_exported_function(private$wasm_instance_module, fun$name, args)
           if (fun$returns_arity == 1L) {
             res[[1L]]
           } else {
@@ -80,14 +82,14 @@ Instance <- R6::R6Class(
           stopifnot(is.numeric(pointer))
           pointer <- as.integer(pointer)
           stopifnot(pointer > 0)
-          private$wasm_instance_module$get_memory_view(pointer)
+          wasm_get_memory_view(private$wasm_instance_module, pointer)
         },
         grow = function(delta) {
           stopifnot(is.numeric(delta))
-          private$wasm_instance_module$grow_memory(as.integer(delta))
+          wasm_grow_memory(private$wasm_instance_module, as.integer(delta))
         },
         get_memory_length = function() {
-          private$wasm_instance_module$get_memory_length()
+          wasm_get_memory_length(private$wasm_instance_module)
         }
       )
     }
