@@ -4,10 +4,12 @@
 \alias{instantiate}
 \title{Instantiate a WebAssembly module}
 \usage{
-instantiate(path)
+instantiate(path, imports = list())
 }
 \arguments{
 \item{path}{the path to the binary wasm file}
+
+\item{imports}{a named list of import function}
 }
 \description{
 Instantiate a WebAssembly module

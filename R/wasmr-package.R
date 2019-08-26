@@ -1,7 +1,5 @@
 ## usethis namespace: start
 #' @useDynLib wasmr, .registration = TRUE
-#' @import Rcpp
+#' @importFrom Rcpp sourceCpp
 ## usethis namespace: end
 NULL
-
-loadModule("wasm_module", TRUE)

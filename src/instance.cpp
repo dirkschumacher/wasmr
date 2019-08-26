@@ -29,11 +29,16 @@ namespace wasmr {
 
   void Instance::instantiate() {
     wasmer_module_t* wasmer_mod = module.get_wasmer_module();
-    auto compile_result = wasmer_module_instantiate(wasmer_mod, &instance, imports, 0);
+    auto compile_result = wasmer_module_instantiate(wasmer_mod, &instance, imports_vec.data(), imports_vec.size());
     if (compile_result != wasmer_result_t::WASMER_OK) {
       throw std::runtime_error(helpers::last_error());
     }
     Instance::init_exports_and_memory();
+  };
+
+  void Instance::instantiate(std::vector<wasmer_import_t> imports) {
+    imports_vec = imports;
+    Instance::instantiate();
   };
 
   void Instance::init_exports_and_memory() {

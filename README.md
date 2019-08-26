@@ -68,12 +68,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min        lq       mean   median
-#>  instance$exports$fib(20)   79.486   93.3555   164.3562  163.860
-#>                   fib(20) 7967.592 8342.5465 10052.8656 9480.994
-#>          uq      max neval
-#>    188.2435   471.73   100
-#>  11050.3475 17489.67   100
+#>                      expr      min        lq       mean    median
+#>  instance$exports$fib(20)   71.008   77.4765   170.6676   130.429
+#>                   fib(20) 7800.595 8588.6915 12709.3337 10240.958
+#>          uq       max neval
+#>    147.8415  2567.081   100
+#>  13286.3420 42799.876   100
 ```
 
 ## Memory
@@ -90,6 +90,29 @@ instance$memory$get_memory_length()
 #> [1] 3
 ```
 
+### Imports
+
+``` r
+set.seed(42)
+imports <- list(
+  env = list(
+    add = typed_function(
+      function(a, b) {
+        # use R's RNG to add a random number to the result
+        a + b * runif(1) * 100
+      },
+      param_types = c("I32", "I32"),
+      return_type = c("I32")
+    )
+  )
+)
+f <- system.file("examples/sum_import.wasm", package = "wasmr")
+instance <- instantiate(f, imports)
+# sum: add(a, b) + 42
+instance$exports$sum(1, 5)
+#> [1] 500
+```
+
 ## Inspiration and References
 
   - [wasmer Python](https://github.com/wasmerio/python-ext-wasm) -
@@ -97,15 +120,6 @@ instance$memory$get_memory_length()
   - [wasmer](https://github.com/wasmerio/wasmer) - especially the C api
     and the tests give some good examples.
   - @jeroen’s [rust template](https://github.com/r-rust/hellorust)
-  - [Rcpp’s
-    modules](http://dirk.eddelbuettel.com/code/rcpp/Rcpp-modules.pdf)
-
-## Todo
-
-  - No import support yet - any wasm file with imports does not work
-  - No Table
-  - bug fixes
-  - Read more about the design of wasm 🙈
 
 ## Contribute
 

@@ -9,7 +9,7 @@ License: MIT + file LICENSE
 Imports: 
     Rcpp,
     methods,
-    R6
+    R6 (>= 2.4.0)
 Suggests: 
     testthat (>= 2.1.0)
 LinkingTo: 
@@ -21,5 +21,7 @@ SystemRequirements: C++11
 URL: https://github.com/dirkschumacher/wasmrrr
 BugReports: https://github.com/dirkschumacher/wasmrrr/issues
 Collate: 
+    'RcppExports.R'
     'instance-class.R'
+    'typed-function.R'
     'wasmr-package.R'

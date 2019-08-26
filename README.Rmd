@@ -80,20 +80,34 @@ instance$memory$grow(1)
 instance$memory$get_memory_length()
 ```
 
+### Imports
+
+```{r}
+set.seed(42)
+imports <- list(
+  env = list(
+    add = typed_function(
+      function(a, b) {
+        # use R's RNG to add a random number to the result
+        a + b * runif(1) * 100
+      },
+      param_types = c("I32", "I32"),
+      return_type = c("I32")
+    )
+  )
+)
+f <- system.file("examples/sum_import.wasm", package = "wasmr")
+instance <- instantiate(f, imports)
+# sum: add(a, b) + 42
+instance$exports$sum(1, 5)
+```
+
 
 ## Inspiration and References
 
 * [wasmer Python](https://github.com/wasmerio/python-ext-wasm) - haven't tried it but looked at the API/examples
 * [wasmer](https://github.com/wasmerio/wasmer) - especially the C api and the tests give some good examples.
 * @jeroen's [rust template](https://github.com/r-rust/hellorust)
-* [Rcpp's modules](http://dirk.eddelbuettel.com/code/rcpp/Rcpp-modules.pdf)
-
-## Todo
-
-* No import support yet - any wasm file with imports does not work
-* No Table
-* bug fixes
-* Read more about the design of wasm 🙈
 
 ## Contribute
 

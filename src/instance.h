@@ -23,6 +23,7 @@ struct InstanceExportFunction {
 class Instance {
 public:
   void instantiate();
+  void instantiate(std::vector<wasmer_import_t> imports);
   void set_module(Module module);
   std::vector<InstanceExportFunction> get_exported_functions() const;
   const InstanceExportFunction& get_exported_function(std::string name);
@@ -33,7 +34,7 @@ public:
   void destroy();
 
 private:
-  wasmer_import_t imports[0] = {};
+  std::vector<wasmer_import_t> imports_vec;
   wasmer_exports_t* exports = NULL;
   wasmer_instance_t* instance = NULL;
   wasmer_memory_t* memory = NULL;
