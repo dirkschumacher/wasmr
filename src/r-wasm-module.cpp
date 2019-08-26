@@ -254,9 +254,9 @@ Rcpp::RawVector RcppWasmModule::get_memory_view(int32_t pointer) {
   // does that always work????
   uint8_t* memory_data = wasmer_memory_data(instance.get_wasmer_memory());
   uint8_t* return_val = memory_data + pointer;
-  int len = strlen((char*)return_val);
-  Rcpp::RawVector ret(len);
-  std::copy(return_val, return_val + len, ret.begin());
+  auto len = get_memory_length() * 65 * 1000;
+  Rcpp::RawVector ret(len - pointer);
+  std::copy(return_val, return_val + (len - pointer), ret.begin());
   return ret;
 };
 

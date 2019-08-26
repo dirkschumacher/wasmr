@@ -67,12 +67,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min        lq       mean    median
-#>  instance$exports$fib(20)   72.624   90.4875   140.6074  138.5775
-#>                   fib(20) 7897.582 8273.0255 11308.5769 9612.2640
-#>          uq      max neval
-#>    149.3165   421.12   100
-#>  12594.5175 49024.02   100
+#>                      expr      min        lq       mean     median
+#>  instance$exports$fib(20)   71.607   77.5445   144.3644   135.2985
+#>                   fib(20) 7888.371 8389.4635 11771.0695 10425.9850
+#>          uq       max neval
+#>    153.4935   572.082   100
+#>  13200.6215 35964.247   100
 ```
 
 ## Memory
@@ -117,7 +117,6 @@ instance$exports$sum(1, 5)
   - It is not feature complete and does not support everything that
     `wasm` supports
   - Imported functions can only have integer parameters
-  - Memory not really usuable right now, except for strings.
   - No globals
   - There is hardly any documentation except for the examples
   - `I32/I64` are mapped to `IntegerVector` and `F32/F64` to

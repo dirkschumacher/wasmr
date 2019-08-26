@@ -106,7 +106,6 @@ instance$exports$sum(1, 5)
 
 * It is not feature complete and does not support everything that `wasm` supports
 * Imported functions can only have integer parameters
-* Memory not really usuable right now, except for strings.
 * No globals
 * There is hardly any documentation except for the examples
 * `I32/I64` are mapped to `IntegerVector` and `F32/F64` to `NumericVector`. Currently no way differentiate.
