@@ -3,7 +3,6 @@
 #include "helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include <R.h>
 
 namespace wasmr {
 

@@ -6,6 +6,8 @@ Authors@R: c(person("Dirk", "Schumacher", , "mail@dirk-schumacher.net", c("cre",
   person("Wasmer, Inc. and its affiliates", role = "cph", comment = "The included header files of the wasmer-c-api"))
 Description: Wasmer bindings.
 License: MIT + file LICENSE
+Depends:
+    R (>= 3.6.0)
 Imports: 
     Rcpp,
     methods,
