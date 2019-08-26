@@ -89,7 +89,7 @@ imports <- list(
     add = typed_function(
       function(a, b) {
         # use R's RNG to add a random number to the result
-        a + b * runif(1) * 100
+        a + b * as.integer(runif(1) * 100)
       },
       param_types = c("I32", "I32"),
       return_type = c("I32")

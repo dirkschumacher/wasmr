@@ -68,12 +68,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min        lq       mean    median
-#>  instance$exports$fib(20)   71.008   77.4765   170.6676   130.429
-#>                   fib(20) 7800.595 8588.6915 12709.3337 10240.958
-#>          uq       max neval
-#>    147.8415  2567.081   100
-#>  13286.3420 42799.876   100
+#>                      expr       min        lq       mean     median
+#>  instance$exports$fib(20)    88.893   150.134   297.6408   196.2185
+#>                   fib(20) 11101.137 25640.307 41277.3606 34899.9140
+#>        uq        max neval
+#>    213.32   4359.162   100
+#>  49295.62 131588.605   100
 ```
 
 ## Memory
@@ -99,7 +99,7 @@ imports <- list(
     add = typed_function(
       function(a, b) {
         # use R's RNG to add a random number to the result
-        a + b * runif(1) * 100
+        a + b * as.integer(runif(1) * 100)
       },
       param_types = c("I32", "I32"),
       return_type = c("I32")
@@ -110,7 +110,7 @@ f <- system.file("examples/sum_import.wasm", package = "wasmr")
 instance <- instantiate(f, imports)
 # sum: add(a, b) + 42
 instance$exports$sum(1, 5)
-#> [1] 500
+#> [1] 498
 ```
 
 ## Inspiration and References
