@@ -69,11 +69,11 @@ microbenchmark::microbenchmark(
 )
 #> Unit: microseconds
 #>                      expr       min        lq       mean     median
-#>  instance$exports$fib(20)    88.893   150.134   297.6408   196.2185
-#>                   fib(20) 11101.137 25640.307 41277.3606 34899.9140
-#>        uq        max neval
-#>    213.32   4359.162   100
-#>  49295.62 131588.605   100
+#>  instance$exports$fib(20)    82.851   153.192   415.9565   181.0615
+#>                   fib(20) 15338.185 23954.238 33469.5424 31916.4285
+#>         uq       max neval
+#>    224.718  15673.08   100
+#>  39323.912 116356.41   100
 ```
 
 ## Memory
@@ -102,7 +102,7 @@ imports <- list(
         a + b * as.integer(runif(1) * 100)
       },
       param_types = c("I32", "I32"),
-      return_type = c("I32")
+      return_type = "I32"
     )
   )
 )

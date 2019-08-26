@@ -92,7 +92,7 @@ imports <- list(
         a + b * as.integer(runif(1) * 100)
       },
       param_types = c("I32", "I32"),
-      return_type = c("I32")
+      return_type = "I32"
     )
   )
 )
