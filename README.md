@@ -11,14 +11,13 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://travis-ci.org/dirkschumacher/wasmrrr.svg?branch=master)](https://travis-ci.org/dirkschumacher/wasmrrr)
 <!-- badges: end -->
 
-The goal of wasmrrr is to run
+The goal of `wasmr` is to run
 [WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly/Concepts)
 code from R using the [wasmer](https://wasmer.io/) runtime.
 
-This is a super early version with bugs and missing features. It is a
-first prototype for me to learn more about WebAssembly, but will evolve
-hopefully into something stable. It has the appropriate code quality of
-a prototype :).
+This is a super early version with probably bugs, missing features and
+not the best code quality. But it already works and I am happy to hear
+feedback.
 
 ## Installation
 
@@ -68,12 +67,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr       min        lq       mean     median
-#>  instance$exports$fib(20)    82.851   153.192   415.9565   181.0615
-#>                   fib(20) 15338.185 23954.238 33469.5424 31916.4285
-#>         uq       max neval
-#>    224.718  15673.08   100
-#>  39323.912 116356.41   100
+#>                      expr      min       lq      mean     median        uq
+#>  instance$exports$fib(20)   71.895   90.490   238.478   139.8895   177.342
+#>                   fib(20) 8299.603 9667.029 14048.787 11468.4550 15454.091
+#>        max neval
+#>   3864.662   100
+#>  71526.612   100
 ```
 
 ## Memory
@@ -112,6 +111,13 @@ instance <- instantiate(f, imports)
 instance$exports$sum(1, 5)
 #> [1] 498
 ```
+
+## Caveats and limitations
+
+  - It is not feature complete and does not support everything that
+    `wasm` supports
+  - Imported functions can only have integer parameters
+  - There is hardly any documentation except for the examples
 
 ## Inspiration and References
 
