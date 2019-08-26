@@ -106,7 +106,9 @@ instance$exports$sum(1, 5)
 
 * It is not feature complete and does not support everything that `wasm` supports
 * Imported functions can only have integer parameters
+* No globals
 * There is hardly any documentation except for the examples
+* WIP
 
 ## Inspiration and References
 
