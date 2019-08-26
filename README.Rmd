@@ -88,6 +88,7 @@ imports <- list(
   env = list(
     add = typed_function(
       function(a, b) {
+        # use R's RNG to add a random number to the result
         a + b * runif(1) * 100
       },
       param_types = c("I32", "I32"),
@@ -97,6 +98,7 @@ imports <- list(
 )
 f <- system.file("examples/sum_import.wasm", package = "wasmr")
 instance <- instantiate(f, imports)
+# sum: add(a, b) + 42
 instance$exports$sum(1, 5)
 ```
 
