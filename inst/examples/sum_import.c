@@ -1,5 +1,5 @@
 // used webassembly.studio to compile it
-extern double add(double a, double b);
+extern int add(int a, int b);
 
 __attribute__((visibility("default")))
 double sum(double a, double b) {

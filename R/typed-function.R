@@ -10,11 +10,17 @@ typed_function <- function(fun, param_types, return_type = character()) {
   stopifnot(length(return_type) <= 1L)
   allowed_types <- c("F32", "F64", "I32", "I64")
   stopifnot(all(return_type %in% allowed_types))
-  stopifnot(all(param_types %in% allowed_types))
+  stopifnot(all(param_types %in% c("I32", "I64")))
   stopifnot(is.function(fun))
   stopifnot(length(formals(fun)) == length(param_types))
   list(
-    fun = fun,
+    fun = function(...) {
+      args <- list(...)
+      stopifnot(all(vapply(args, length, integer(1L)) == 1L))
+      ret <- fun(...)
+      stopifnot(length(ret) == 1L, is.numeric(ret))
+      ret
+    },
     param_types = param_types,
     return_type = return_type
   )
