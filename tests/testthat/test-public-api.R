@@ -8,7 +8,7 @@ test_that("get the memory", {
   instance <- instantiate("../../inst/examples/hello.wasm")
   pointer <- instance$exports$hello()
   memory <- instance$memory$get_memory_view(pointer)
-  expect_equal(rawToChar(memory), "Hello world")
+  expect_equal(rawToChar(memory[1:11]), "Hello world")
 })
 
 test_that("complex loop", {

@@ -74,7 +74,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // wasm_get_memory_view
-Rcpp::RawVector wasm_get_memory_view(Rcpp::XPtr<wasmr::RcppWasmModule> module, int32_t pointer);
+SEXP wasm_get_memory_view(Rcpp::XPtr<wasmr::RcppWasmModule> module, int32_t pointer);
 RcppExport SEXP _wasmr_wasm_get_memory_view(SEXP moduleSEXP, SEXP pointerSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -109,7 +109,9 @@ static const R_CallMethodDef CallEntries[] = {
     {NULL, NULL, 0}
 };
 
+void init_wasmr_memory_raw_view(DllInfo* dll);
 RcppExport void R_init_wasmr(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
+    init_wasmr_memory_raw_view(dll);
 }

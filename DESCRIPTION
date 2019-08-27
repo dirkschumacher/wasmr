@@ -9,7 +9,7 @@ License: MIT + file LICENSE
 Depends:
     R (>= 3.6.0)
 Imports: 
-    Rcpp,
+    Rcpp (>= 0.12.18.3),
     methods,
     R6 (>= 2.4.0)
 Suggests: 
