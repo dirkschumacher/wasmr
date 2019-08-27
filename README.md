@@ -8,7 +8,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build
-status](https://travis-ci.org/dirkschumacher/wasmrrr.svg?branch=master)](https://travis-ci.org/dirkschumacher/wasmrrr)
+status](https://travis-ci.org/dirkschumacher/wasmr.svg?branch=master)](https://travis-ci.org/dirkschumacher/wasmr)
 <!-- badges: end -->
 
 The goal of `wasmr` is to run
@@ -70,12 +70,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min       lq       mean   median         uq
-#>  instance$exports$fib(20)   70.714   77.635   126.6736  132.941   143.6045
-#>                   fib(20) 7905.294 8338.638 10593.8455 9070.479 11339.4980
-#>        max neval
-#>    365.488   100
-#>  39368.216   100
+#>                      expr      min         lq       mean    median
+#>  instance$exports$fib(20)   71.519   103.5065   263.4124   148.134
+#>                   fib(20) 8692.607 13235.4250 19181.9218 17119.556
+#>          uq       max neval
+#>    279.5975  2077.278   100
+#>  21479.5050 58808.446   100
 ```
 
 ## Memory
@@ -105,7 +105,7 @@ instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
 memory <- instance$memory$get_memory_view(memory_pointer)
 .Internal(inspect(memory))
-#> @7f99f274d2c8 24 RAWSXP g0c0 [NAM(7)] wasm memory (len=130000, offset=1024)
+#> @7f880bca63a0 24 RAWSXP g0c0 [NAM(7)] wasm memory (len=130000, offset=1024)
 memory[1:11]
 #>  [1] 48 65 6c 6c 6f 20 77 6f 72 6c 64
 rawToChar(memory[1:5])
