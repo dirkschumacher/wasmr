@@ -1,14 +1,15 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
-language: r
+language:
+  - r
+
+before_install:
+  - curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
+  - export PATH=~/.cargo/bin:$PATH
+
 cache: packages
 latex: false
 fortran: false
 pandoc: false
 
 cache: packages
-
-addons:
-  apt:
-    packages:
-      - cargo
