@@ -1,6 +1,6 @@
 #include "module.h"
 #include "helpers.h"
-
+#include <stdexcept>
 namespace wasmr {
 
 void Module::compile(uint8_t *wasm_bytes, uint32_t wasm_bytes_len) {

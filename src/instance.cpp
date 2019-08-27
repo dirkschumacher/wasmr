@@ -1,6 +1,7 @@
 #include "instance.h"
 #include "module.h"
 #include "helpers.h"
+#include <stdexcept>
 
 namespace wasmr {
 
