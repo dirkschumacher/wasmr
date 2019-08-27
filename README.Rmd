@@ -48,7 +48,7 @@ instance$exports$sum(10, 20)
 f <- system.file("examples/hello.wasm", package = "wasmr")
 instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
-(hi <- instance$memory$get_memory_view(memory_pointer))
+hi <- instance$memory$get_memory_view(memory_pointer)
 rawToChar(hi[1:11])
 ```
 

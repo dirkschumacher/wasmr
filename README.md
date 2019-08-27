@@ -45,9 +45,8 @@ instance$exports$sum(10, 20)
 f <- system.file("examples/hello.wasm", package = "wasmr")
 instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
-(hi <- instance$memory$get_memory_view(memory_pointer))
-#>  [1] 48 65 6c 6c 6f 20 77 6f 72 6c 64
-rawToChar(hi)
+hi <- instance$memory$get_memory_view(memory_pointer)
+rawToChar(hi[1:11])
 #> [1] "Hello world"
 ```
 
@@ -67,12 +66,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min       lq       mean     median
-#>  instance$exports$fib(20)   70.267   75.910   173.3486   134.6565
-#>                   fib(20) 7834.426 8183.016 11326.3046 10112.8035
-#>         uq       max neval
-#>    146.849  3401.142   100
-#>  12676.181 46626.247   100
+#>                      expr      min        lq       mean    median
+#>  instance$exports$fib(20)   71.185   78.8985   132.7345  130.7735
+#>                   fib(20) 7958.090 8253.9110 11251.2783 9365.3940
+#>          uq       max neval
+#>    147.9625   555.059   100
+#>  11463.6660 43593.174   100
 ```
 
 ## Memory
@@ -87,6 +86,26 @@ instance$memory$get_memory_length()
 instance$memory$grow(1)
 instance$memory$get_memory_length()
 #> [1] 3
+```
+
+The value returned from `get_memory_view` is a lazy raw vector that just
+stores a pointer to the `wasmer` memory. If you use the accessor methods
+`[i]` or request a continuous region `[1:n]` then only the necessary
+values from the linear memory will be returned as a `raw vector`.
+
+The data structure does not support setting memory … yet.
+
+``` r
+f <- system.file("examples/hello.wasm", package = "wasmr")
+instance <- instantiate(f)
+memory_pointer <- instance$exports$hello()
+memory <- instance$memory$get_memory_view(memory_pointer)
+.Internal(inspect(memory))
+#> @7fac7b11c0b0 24 RAWSXP g0c0 [NAM(7)] wasm memory (len=130000, offset=1024)
+memory[1:11]
+#>  [1] 48 65 6c 6c 6f 20 77 6f 72 6c 64
+rawToChar(memory[1:5])
+#> [1] "Hello"
 ```
 
 ### Imports
