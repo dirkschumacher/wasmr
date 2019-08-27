@@ -26,7 +26,7 @@ public:
   void finalize();
   void instantiate(Rcpp::RawVector bytes, Rcpp::List imports);
   Rcpp::List call_exported_function(std::string fun_name, Rcpp::List arguments);
-  Rcpp::RawVector get_memory_view(int32_t pointer);
+  SEXP get_memory_view(int32_t pointer);
   uint32_t get_memory_length();
   void grow_memory(uint32_t delta);
   Rcpp::List get_exported_functions();

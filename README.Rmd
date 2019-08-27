@@ -49,7 +49,7 @@ f <- system.file("examples/hello.wasm", package = "wasmr")
 instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
 (hi <- instance$memory$get_memory_view(memory_pointer))
-rawToChar(hi)
+rawToChar(hi[1:11])
 ```
 
 ```{r}
@@ -79,6 +79,21 @@ instance$memory$get_memory_length()
 instance$memory$grow(1)
 instance$memory$get_memory_length()
 ```
+
+The value returned from `get_memory_view` is a lazy raw vector that just stores a pointer to the `wasmer` memory. If you use the accessor methods `[i]` or request a continuous region `[1:n]` then only the necessary values from the linear memory will be returned as a `raw vector`.
+
+The data structure does not support setting memory ... yet.
+
+```{r}
+f <- system.file("examples/hello.wasm", package = "wasmr")
+instance <- instantiate(f)
+memory_pointer <- instance$exports$hello()
+memory <- instance$memory$get_memory_view(memory_pointer)
+.Internal(inspect(memory))
+memory[1:11]
+rawToChar(memory[1:5])
+```
+
 
 ### Imports
 
@@ -115,7 +130,8 @@ instance$exports$sum(1, 5)
 
 * [wasmer Python](https://github.com/wasmerio/python-ext-wasm) - haven't tried it but looked at the API/examples
 * [wasmer](https://github.com/wasmerio/wasmer) - especially the C api and the tests give some good examples.
-* @jeroen's [rust template](https://github.com/r-rust/hellorust)
+* @jeroen 's [rust template](https://github.com/r-rust/hellorust)
+* @romainfrancois 's [altrepisode](https://github.com/romainfrancois/altrepisode) and @jimhester 's [vroom](https://github.com/r-lib/vroom) on how to use ALTREP and C++.
 
 ## Contribute
 

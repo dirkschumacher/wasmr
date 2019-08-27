@@ -81,7 +81,7 @@ Instance <- R6::R6Class(
         get_memory_view = function(pointer) {
           stopifnot(is.numeric(pointer))
           pointer <- as.integer(pointer)
-          stopifnot(pointer > 0)
+          stopifnot(pointer >= 0)
           wasm_get_memory_view(private$wasm_instance_module, pointer)
         },
         grow = function(delta) {

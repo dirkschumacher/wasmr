@@ -3,7 +3,7 @@
 #include "helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include <R.h>
+#include "r-memory-raw-view.h"
 
 namespace wasmr {
 
@@ -250,15 +250,8 @@ Rcpp::List RcppWasmModule::call_exported_function(std::string fun_name, Rcpp::Li
   return ret;
 };
 
-Rcpp::RawVector RcppWasmModule::get_memory_view(int32_t pointer) {
-  // does that always work????
-  uint8_t* memory_data = wasmer_memory_data(instance.get_wasmer_memory());
-  uint8_t* return_val = memory_data + pointer;
-  auto page_size = 65 * 1000;
-  auto len = get_memory_length() * page_size;
-  Rcpp::RawVector ret(len - pointer);
-  std::copy(return_val, return_val + (len - pointer), ret.begin());
-  return ret;
+SEXP RcppWasmModule::get_memory_view(int32_t pointer = 0) {
+  return r_wasmer_memory_raw_view::make(&instance, pointer);
 };
 
 uint32_t RcppWasmModule::get_memory_length() {

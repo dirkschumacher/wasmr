@@ -40,7 +40,7 @@ uint32_t wasm_get_memory_length(Rcpp::XPtr<wasmr::RcppWasmModule> module) {
 }
 
 // [[Rcpp::export]]
-Rcpp::RawVector wasm_get_memory_view(Rcpp::XPtr<wasmr::RcppWasmModule> module, int32_t pointer) {
+SEXP wasm_get_memory_view(Rcpp::XPtr<wasmr::RcppWasmModule> module, int32_t pointer) {
   return module->get_memory_view(pointer);
 }
 

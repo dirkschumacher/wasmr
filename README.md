@@ -67,12 +67,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min        lq       mean     median
-#>  instance$exports$fib(20)   71.607   77.5445   144.3644   135.2985
-#>                   fib(20) 7888.371 8389.4635 11771.0695 10425.9850
-#>          uq       max neval
-#>    153.4935   572.082   100
-#>  13200.6215 35964.247   100
+#>                      expr      min       lq       mean     median
+#>  instance$exports$fib(20)   70.267   75.910   173.3486   134.6565
+#>                   fib(20) 7834.426 8183.016 11326.3046 10112.8035
+#>         uq       max neval
+#>    146.849  3401.142   100
+#>  12676.181 46626.247   100
 ```
 
 ## Memory
@@ -129,7 +129,11 @@ instance$exports$sum(1, 5)
     haven’t tried it but looked at the API/examples
   - [wasmer](https://github.com/wasmerio/wasmer) - especially the C api
     and the tests give some good examples.
-  - @jeroen’s [rust template](https://github.com/r-rust/hellorust)
+  - @jeroen ’s [rust template](https://github.com/r-rust/hellorust)
+  - @romainfrancois ’s
+    [altrepisode](https://github.com/romainfrancois/altrepisode) and
+    @jimhester ’s [vroom](https://github.com/r-lib/vroom) on how to use
+    ALTREP and C++.
 
 ## Contribute
 
