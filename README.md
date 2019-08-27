@@ -15,9 +15,13 @@ The goal of `wasmr` is to run
 [WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly/Concepts)
 code from R using the [wasmer](https://wasmer.io/) runtime.
 
-This is a super early version with probably bugs, missing features and
-not the best code quality. But it already works and I am happy to hear
-feedback.
+This is a early version with probably bugs, missing features and not the
+best code quality. But it already works and I am happy to hear feedback.
+The goal is that this package evolves into something stable.
+
+The package is mainly written in C++ using the C API of the `wasmer`
+runtime which is written in `rust`. You therefore need a rust compiler
+to install the package.
 
 ## Installation
 
@@ -66,12 +70,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min        lq       mean    median
-#>  instance$exports$fib(20)   71.185   78.8985   132.7345  130.7735
-#>                   fib(20) 7958.090 8253.9110 11251.2783 9365.3940
-#>          uq       max neval
-#>    147.9625   555.059   100
-#>  11463.6660 43593.174   100
+#>                      expr      min       lq       mean   median         uq
+#>  instance$exports$fib(20)   70.714   77.635   126.6736  132.941   143.6045
+#>                   fib(20) 7905.294 8338.638 10593.8455 9070.479 11339.4980
+#>        max neval
+#>    365.488   100
+#>  39368.216   100
 ```
 
 ## Memory
@@ -101,7 +105,7 @@ instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
 memory <- instance$memory$get_memory_view(memory_pointer)
 .Internal(inspect(memory))
-#> @7fac7b11c0b0 24 RAWSXP g0c0 [NAM(7)] wasm memory (len=130000, offset=1024)
+#> @7f99f274d2c8 24 RAWSXP g0c0 [NAM(7)] wasm memory (len=130000, offset=1024)
 memory[1:11]
 #>  [1] 48 65 6c 6c 6f 20 77 6f 72 6c 64
 rawToChar(memory[1:5])
@@ -139,7 +143,8 @@ instance$exports$sum(1, 5)
   - No globals
   - There is hardly any documentation except for the examples
   - `I32/I64` are mapped to `IntegerVector` and `F32/F64` to
-    `NumericVector`. Currently no way differentiate.
+    `NumericVector`. Currently no way to differentiate.
+  - I am still learning about `wasm` 🙈
   - WIP
 
 ## Inspiration and References

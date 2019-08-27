@@ -22,7 +22,9 @@ knitr::opts_chunk$set(
 
 The goal of `wasmr` is to run [WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly/Concepts) code from R using the [wasmer](https://wasmer.io/) runtime.
 
-This is a super early version with probably bugs, missing features and not the best code quality. But it already works and I am happy to hear feedback.
+This is a early version with probably bugs, missing features and not the best code quality. But it already works and I am happy to hear feedback. The goal is that this package evolves into something stable.
+
+The package is mainly written in C++ using the C API of the `wasmer` runtime which is written in `rust`. You therefore need a rust compiler to install the package.
 
 ## Installation
 
@@ -123,7 +125,8 @@ instance$exports$sum(1, 5)
 * Imported functions can only have integer parameters
 * No globals
 * There is hardly any documentation except for the examples
-* `I32/I64` are mapped to `IntegerVector` and `F32/F64` to `NumericVector`. Currently no way differentiate.
+* `I32/I64` are mapped to `IntegerVector` and `F32/F64` to `NumericVector`. Currently no way to differentiate.
+* I am still learning about `wasm` 🙈
 * WIP
 
 ## Inspiration and References
