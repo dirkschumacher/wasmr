@@ -5,6 +5,7 @@ language:
 
 before_install:
   - curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
+  - export PATH=~/.cargo/bin:$PATH
 
 cache: packages
 latex: false
