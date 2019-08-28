@@ -18,7 +18,7 @@ ptr2 <- instance$exports$allocate(str2_len)
 instance$memory$get_memory_view(ptr1)$set(seq_along(str1), str1)
 instance$memory$get_memory_view(ptr2)$set(seq_along(str2), str2)
 
-# all the compare function that now reads the data from the wasm memory
+# the compare function now reads the data from the wasm memory
 out_ptr <- instance$exports$compare(ptr1, ptr2)
 result <- rawToChar(instance$memory$get_memory_view(out_ptr)$get(1:28))
 cat(result)
