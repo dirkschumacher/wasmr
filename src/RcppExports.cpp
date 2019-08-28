@@ -74,14 +74,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // wasm_get_memory_view
-SEXP wasm_get_memory_view(Rcpp::XPtr<wasmr::RcppWasmModule> module, int32_t pointer);
-RcppExport SEXP _wasmr_wasm_get_memory_view(SEXP moduleSEXP, SEXP pointerSEXP) {
+SEXP wasm_get_memory_view(Rcpp::XPtr<wasmr::RcppWasmModule> module, uint32_t offset);
+RcppExport SEXP _wasmr_wasm_get_memory_view(SEXP moduleSEXP, SEXP offsetSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::XPtr<wasmr::RcppWasmModule> >::type module(moduleSEXP);
-    Rcpp::traits::input_parameter< int32_t >::type pointer(pointerSEXP);
-    rcpp_result_gen = Rcpp::wrap(wasm_get_memory_view(module, pointer));
+    Rcpp::traits::input_parameter< uint32_t >::type offset(offsetSEXP);
+    rcpp_result_gen = Rcpp::wrap(wasm_get_memory_view(module, offset));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -96,6 +96,19 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// wasm_set_memory
+void wasm_set_memory(Rcpp::XPtr<wasmr::RcppWasmModule> module, uint32_t offset, Rcpp::IntegerVector indexes, Rcpp::RawVector values);
+RcppExport SEXP _wasmr_wasm_set_memory(SEXP moduleSEXP, SEXP offsetSEXP, SEXP indexesSEXP, SEXP valuesSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::XPtr<wasmr::RcppWasmModule> >::type module(moduleSEXP);
+    Rcpp::traits::input_parameter< uint32_t >::type offset(offsetSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type indexes(indexesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RawVector >::type values(valuesSEXP);
+    wasm_set_memory(module, offset, indexes, values);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wasmr_wasm_init_module", (DL_FUNC) &_wasmr_wasm_init_module, 0},
@@ -106,6 +119,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wasmr_wasm_get_memory_length", (DL_FUNC) &_wasmr_wasm_get_memory_length, 1},
     {"_wasmr_wasm_get_memory_view", (DL_FUNC) &_wasmr_wasm_get_memory_view, 2},
     {"_wasmr_wasm_grow_memory", (DL_FUNC) &_wasmr_wasm_grow_memory, 2},
+    {"_wasmr_wasm_set_memory", (DL_FUNC) &_wasmr_wasm_set_memory, 4},
     {NULL, NULL, 0}
 };
 

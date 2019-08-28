@@ -51,7 +51,7 @@ f <- system.file("examples/hello.wasm", package = "wasmr")
 instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
 hi <- instance$memory$get_memory_view(memory_pointer)
-rawToChar(hi[1:11])
+rawToChar(hi$get(1:11))
 ```
 
 ```{r}
@@ -82,18 +82,17 @@ instance$memory$grow(1)
 instance$memory$get_memory_length()
 ```
 
-The value returned from `get_memory_view` is a lazy raw vector that just stores a pointer to the `wasmer` memory. If you use the accessor methods `[i]` or request a continuous region `[1:n]` then only the necessary values from the linear memory will be returned as a `raw vector`.
-
-The data structure does not support setting memory ... yet.
-
 ```{r}
 f <- system.file("examples/hello.wasm", package = "wasmr")
 instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
 memory <- instance$memory$get_memory_view(memory_pointer)
-.Internal(inspect(memory))
-memory[1:11]
-rawToChar(memory[1:5])
+memory$get(1:11)
+rawToChar(memory$get(1:11))
+
+# you can also write to the internal memory
+memory$set(5:6, charToRaw("o_"))
+rawToChar(memory$get(1:11))
 ```
 
 
@@ -126,6 +125,7 @@ instance$exports$sum(1, 5)
 * No globals
 * There is hardly any documentation except for the examples
 * `I32/I64` are mapped to `IntegerVector` and `F32/F64` to `NumericVector`. Currently no way to differentiate.
+* Code can sometimes still crash R. Room for code improvements :)
 * I am still learning about `wasm` 🙈
 * WIP
 

@@ -250,9 +250,19 @@ Rcpp::List RcppWasmModule::call_exported_function(std::string fun_name, Rcpp::Li
   return ret;
 };
 
-SEXP RcppWasmModule::get_memory_view(int32_t pointer = 0) {
-  return r_wasmer_memory_raw_view::make(&instance, pointer);
+SEXP RcppWasmModule::get_memory_view(uint32_t offset = 0) {
+  return r_wasmer_memory_raw_view::make(&instance, offset);
 };
+
+
+void RcppWasmModule::set_memory(uint32_t offset, Rcpp::IntegerVector indexes, Rcpp::RawVector values) {
+  Rcpp::IntegerVector indexes_starting_at_0 = indexes - 1;
+  instance.set_memory(
+    offset,
+    Rcpp::as<std::vector<uint32_t>>(indexes_starting_at_0),
+    Rcpp::as<std::vector<uint8_t>>(values)
+  );
+}
 
 uint32_t RcppWasmModule::get_memory_length() {
   return instance.get_memory_length();

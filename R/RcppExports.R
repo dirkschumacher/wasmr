@@ -25,11 +25,15 @@ wasm_get_memory_length <- function(module) {
     .Call(`_wasmr_wasm_get_memory_length`, module)
 }
 
-wasm_get_memory_view <- function(module, pointer) {
-    .Call(`_wasmr_wasm_get_memory_view`, module, pointer)
+wasm_get_memory_view <- function(module, offset) {
+    .Call(`_wasmr_wasm_get_memory_view`, module, offset)
 }
 
 wasm_grow_memory <- function(module, delta) {
     invisible(.Call(`_wasmr_wasm_grow_memory`, module, delta))
+}
+
+wasm_set_memory <- function(module, offset, indexes, values) {
+    invisible(.Call(`_wasmr_wasm_set_memory`, module, offset, indexes, values))
 }
 
