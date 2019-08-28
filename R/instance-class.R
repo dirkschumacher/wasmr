@@ -79,6 +79,9 @@ Instance <- R6::R6Class(
     build_memory = function() {
       list(
         get_memory_view = function(pointer) {
+          new_memory_view(private$wasm_instance_module, self, pointer)
+        },
+        get_memory_raw_vec = function(pointer) {
           stopifnot(is.numeric(pointer))
           pointer <- as.integer(pointer)
           stopifnot(pointer >= 0)

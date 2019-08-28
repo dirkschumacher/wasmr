@@ -22,11 +22,11 @@ struct finalize_import_func_log_entry {
 // this functions as the interface towards R
 class RcppWasmModule {
 public:
-  // TODO: figure out to release everything without the segfault
   void finalize();
   void instantiate(Rcpp::RawVector bytes, Rcpp::List imports);
   Rcpp::List call_exported_function(std::string fun_name, Rcpp::List arguments);
-  SEXP get_memory_view(int32_t pointer);
+  SEXP get_memory_view(uint32_t offset);
+  void set_memory(uint32_t offset, Rcpp::IntegerVector indexes, Rcpp::RawVector values);
   uint32_t get_memory_length();
   void grow_memory(uint32_t delta);
   Rcpp::List get_exported_functions();

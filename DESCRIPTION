@@ -3,7 +3,7 @@ Package: wasmr
 Title: Execute WebAssembly from R using wasmer
 Version: 0.1.0.9000
 Authors@R: c(person("Dirk", "Schumacher", , "mail@dirk-schumacher.net", c("cre", "aut")),
-  person("Wasmer, Inc. and its affiliates", role = "cph", comment = "The included header files of the wasmer-c-api"))
+  person("Wasmer, Inc. and its affiliates", role = "cph", comment = "The included header file of the wasmer-c-api and the greet.wasm example"))
 Description: Wasmer bindings.
 License: MIT + file LICENSE
 Depends:
@@ -25,5 +25,6 @@ BugReports: https://github.com/dirkschumacher/wasmrrr/issues
 Collate: 
     'RcppExports.R'
     'instance-class.R'
+    'memory-view.R'
     'typed-function.R'
     'wasmr-package.R'

@@ -31,6 +31,7 @@ public:
   std::vector<wasmer_value_t> call_exported_function(std::string fun_name, std::vector<wasmer_value_t> params);
   wasmer_memory_t* get_wasmer_memory() const;
   wasmer_exports_t* get_wasmer_exports() const;
+  void set_memory(uint32_t offset, const std::vector<uint32_t>& indexes, const std::vector<uint8_t>& values);
   void destroy();
 
 private:

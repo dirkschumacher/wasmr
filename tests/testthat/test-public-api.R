@@ -8,7 +8,7 @@ test_that("get the memory", {
   instance <- instantiate("../../inst/examples/hello.wasm")
   pointer <- instance$exports$hello()
   memory <- instance$memory$get_memory_view(pointer)
-  expect_equal(rawToChar(memory[1:11]), "Hello world")
+  expect_equal(rawToChar(memory$get(1:11)), "Hello world")
 })
 
 test_that("complex loop", {
@@ -40,4 +40,20 @@ test_that("import functions",{
   instance <- instantiate("../../inst/examples/sum_import.wasm", imports)
   res <- instance$exports$sum(1, 5)
   expect_equal(res, 6 * 2 + 42)
+})
+
+test_that("write to memory", {
+  instance <- instantiate("../../inst/examples/greet.wasm")
+  subject <- charToRaw("everyone")
+  length_of_subject <- length(subject)
+  input_pointer <- instance$exports$allocate(length_of_subject)
+  memory <- instance$memory$get_memory_view(input_pointer)
+  memory$set(1:length_of_subject, subject)
+  memory$set(length_of_subject + 1, as.raw(0)) # C-string terminates by NULL.
+  output_pointer <- instance$exports$greet(input_pointer)
+  memory <- instance$memory$get_memory_view(output_pointer)
+  expected_output <- "Hello, everyone!"
+  expect_equal(rawToChar(memory$get(1:16)), expected_output)
+  instance$exports$deallocate(input_pointer, length_of_subject)
+  instance$exports$deallocate(output_pointer, 16)
 })

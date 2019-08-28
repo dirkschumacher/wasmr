@@ -50,7 +50,7 @@ f <- system.file("examples/hello.wasm", package = "wasmr")
 instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
 hi <- instance$memory$get_memory_view(memory_pointer)
-rawToChar(hi[1:11])
+rawToChar(hi$get(1:11))
 #> [1] "Hello world"
 ```
 
@@ -70,12 +70,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min         lq       mean    median
-#>  instance$exports$fib(20)   71.519   103.5065   263.4124   148.134
-#>                   fib(20) 8692.607 13235.4250 19181.9218 17119.556
+#>                      expr      min       lq       mean    median
+#>  instance$exports$fib(20)   71.290   79.051   161.1395   135.815
+#>                   fib(20) 7880.672 8635.832 13192.9194 10995.909
 #>          uq       max neval
-#>    279.5975  2077.278   100
-#>  21479.5050 58808.446   100
+#>    161.0495   703.339   100
+#>  14706.2930 41949.392   100
 ```
 
 ## Memory
@@ -92,24 +92,20 @@ instance$memory$get_memory_length()
 #> [1] 3
 ```
 
-The value returned from `get_memory_view` is a lazy raw vector that just
-stores a pointer to the `wasmer` memory. If you use the accessor methods
-`[i]` or request a continuous region `[1:n]` then only the necessary
-values from the linear memory will be returned as a `raw vector`.
-
-The data structure does not support setting memory … yet.
-
 ``` r
 f <- system.file("examples/hello.wasm", package = "wasmr")
 instance <- instantiate(f)
 memory_pointer <- instance$exports$hello()
 memory <- instance$memory$get_memory_view(memory_pointer)
-.Internal(inspect(memory))
-#> @7f880bca63a0 24 RAWSXP g0c0 [NAM(7)] wasm memory (len=130000, offset=1024)
-memory[1:11]
+memory$get(1:11)
 #>  [1] 48 65 6c 6c 6f 20 77 6f 72 6c 64
-rawToChar(memory[1:5])
-#> [1] "Hello"
+rawToChar(memory$get(1:11))
+#> [1] "Hello world"
+
+# you can also write to the internal memory
+memory$set(5:6, charToRaw("o_"))
+rawToChar(memory$get(1:11))
+#> [1] "Hello_world"
 ```
 
 ### Imports
@@ -144,6 +140,7 @@ instance$exports$sum(1, 5)
   - There is hardly any documentation except for the examples
   - `I32/I64` are mapped to `IntegerVector` and `F32/F64` to
     `NumericVector`. Currently no way to differentiate.
+  - Code can sometimes still crash R. Room for code improvements :)
   - I am still learning about `wasm` 🙈
   - WIP
 

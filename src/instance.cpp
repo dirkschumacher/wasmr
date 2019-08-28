@@ -2,6 +2,7 @@
 #include "module.h"
 #include "helpers.h"
 #include <stdexcept>
+#include "myrustlib/api.h"
 
 namespace wasmr {
 
@@ -136,4 +137,15 @@ namespace wasmr {
     }
     return results;
   };
+
+  void Instance::set_memory(uint32_t offset, const std::vector<uint32_t>& indexes, const std::vector<uint8_t>& values) {
+    wasmer_memory_write_u8(
+      memory, offset,
+      indexes.data(),
+      indexes.size(),
+      values.data(),
+      values.size()
+    );
+  };
+
 }
