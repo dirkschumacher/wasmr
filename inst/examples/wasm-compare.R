@@ -1,6 +1,3 @@
-# this is modelled after the fastdiff python package
-# https://github.com/syrusakbary/fastdiff
-
 library(wasmr)
 wasm_url <- "https://github.com/syrusakbary/fastdiff/blob/master/python/fastdiff/fastdiff.wasm?raw=true"
 f <- tempfile()
@@ -23,11 +20,18 @@ instance$memory$get_memory_view(ptr2)$set(seq_along(str2), str2)
 
 # all the compare function that now reads the data from the wasm memory
 out_ptr <- instance$exports$compare(ptr1, ptr2)
-result <- rawToChar(instance$memory$get_memory_view(out_ptr)$get(1:30))
+result <- rawToChar(instance$memory$get_memory_view(out_ptr)$get(1:28))
 cat(result)
+#>   hello
+#> - wasm
+#> + python
+#>
 
 # now dealocate memory
 deallocate <- instance$exports$deallocate
 deallocate(ptr1, str1_len)
+#> list()
 deallocate(ptr2, str2_len)
-deallocate(out_ptr, 30)
+#> list()
+deallocate(out_ptr, 28)
+#> list()
