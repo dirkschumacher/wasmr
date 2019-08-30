@@ -96,6 +96,14 @@ std::vector<wasmer_value_tag> RcppWasmModule::to_wasmer_value_tags(Rcpp::Charact
   return ret;
 }
 
+#define WASMR_BUILD_FUNC_CALLBACK(CALLBACK_NAME)                               \
+  wasmer_trampoline_buffer_builder_add_callinfo_trampoline(                    \
+    tbb,                                                                       \
+    (wasmer_trampoline_callable_t *) CALLBACK_NAME,                            \
+    (void *) local_context,                                                    \
+    params_sig_vec.size() + 1                                                  \
+  )
+
 std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(Rcpp::List imports) {
   // TODO: can I also query the import definitions in the wasm file?
   std::vector<wasmer_import_t> ret;
@@ -141,31 +149,17 @@ std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(Rcpp::List imports)
       auto return_sig_vec = to_wasmer_value_tags(typed_fun_list["return_type"]);
       r_fun_call_context* local_context = new r_fun_call_context(fun, params_sig_vec);
       wasmer_trampoline_buffer_builder_t* tbb = wasmer_trampoline_buffer_builder_new();
+
       unsigned long exec_r_fun_idx;
       bool is_void_return = return_sig_vec.size() == 0;
       bool is_float_return = return_sig_vec.size() == 1 && is_wasmer_numeric_value(return_sig_vec[0]);
       bool is_integer_return = return_sig_vec.size() == 1 && is_wasmer_integer_value(return_sig_vec[0]);
       if (is_void_return) {
-        exec_r_fun_idx = wasmer_trampoline_buffer_builder_add_callinfo_trampoline(
-          tbb,
-          (wasmer_trampoline_callable_t *) execute_r_fun_in_wasmer_void,
-          (void *) local_context,
-          params_sig_vec.size() + 1
-        );
+        exec_r_fun_idx = WASMR_BUILD_FUNC_CALLBACK(execute_r_fun_in_wasmer_void);
       } else if (is_float_return) {
-        exec_r_fun_idx = wasmer_trampoline_buffer_builder_add_callinfo_trampoline(
-          tbb,
-          (wasmer_trampoline_callable_t *) execute_r_fun_in_wasmer_double,
-          (void *) local_context,
-          params_sig_vec.size() + 1
-        );
+        exec_r_fun_idx = WASMR_BUILD_FUNC_CALLBACK(execute_r_fun_in_wasmer_double);
       } else if (is_integer_return)  {
-        exec_r_fun_idx = wasmer_trampoline_buffer_builder_add_callinfo_trampoline(
-          tbb,
-          (wasmer_trampoline_callable_t *) execute_r_fun_in_wasmer_int,
-          (void *) local_context,
-          params_sig_vec.size() + 1
-        );
+        exec_r_fun_idx = WASMR_BUILD_FUNC_CALLBACK(execute_r_fun_in_wasmer_int);
       } else {
         Rcpp::stop("Your input function has a wrong return type");
       }
@@ -194,6 +188,11 @@ std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(Rcpp::List imports)
   return ret;
 };
 
+#define WASMR_SET_PARAM_VALUE(TYPE, WASMER_TYPE, VAL)          \
+case wasmer_value_tag::WASMER_TYPE:                            \
+  param.value.TYPE = VAL;                                      \
+  break;
+
 Rcpp::List RcppWasmModule::call_exported_function(std::string fun_name, Rcpp::List arguments) {
   const wasmr::InstanceExportFunction& fun = instance.get_exported_function(fun_name);
   if (arguments.length() != fun.params_arity) {
@@ -205,18 +204,10 @@ Rcpp::List RcppWasmModule::call_exported_function(std::string fun_name, Rcpp::Li
     const auto& val = arguments[i];
     param.tag = fun.params_data_types[i];
     switch(param.tag) {
-    case wasmer_value_tag::WASM_F32:
-      param.value.F32 = (float)val;
-      break;
-    case wasmer_value_tag::WASM_F64:
-      param.value.F64 = (double)val;
-      break;
-    case wasmer_value_tag::WASM_I32:
-      param.value.I32 = (int32_t)val;
-      break;
-    case wasmer_value_tag::WASM_I64:
-      param.value.I64 = (int64_t)val;
-      break;
+    WASMR_SET_PARAM_VALUE(F32, WASM_F32, val);
+    WASMR_SET_PARAM_VALUE(F64, WASM_F64, val);
+    WASMR_SET_PARAM_VALUE(I32, WASM_I32, val);
+    WASMR_SET_PARAM_VALUE(I64, WASM_I64, val);
     default:
       Rcpp::stop("Unsupported type");
     }
