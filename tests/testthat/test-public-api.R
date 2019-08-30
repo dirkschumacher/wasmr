@@ -42,6 +42,32 @@ test_that("import functions",{
   expect_equal(res, 6 * 2 + 42)
 })
 
+
+test_that("import functions 2",{
+  imports <- list(
+    env = list(
+      add = typed_function(
+        function(a, b) {
+          (a + b)
+        },
+        param_types = c("I32", "I32"),
+        return_type = c("I32")
+      ),
+      add2 = typed_function(
+        function(a, b) {
+          (a + b)
+        },
+        param_types = c("I32", "I32"),
+        return_type = c("I32")
+      )
+    )
+  )
+  instance <- instantiate("../../inst/examples/two-imports.wasm", imports)
+  res <- instance$exports$sum(1, 5)
+  expect_equal(res, (1 + 5) * 2)
+})
+
+
 test_that("write to memory", {
   instance <- instantiate("../../inst/examples/greet.wasm")
   subject <- charToRaw("everyone")

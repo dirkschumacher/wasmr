@@ -9,7 +9,7 @@
 typed_function <- function(fun, param_types, return_type = character()) {
   stopifnot(length(return_type) <= 1L)
   allowed_types <- c("F32", "F64", "I32", "I64")
-  stopifnot(all(return_type %in% allowed_types))
+  stopifnot(all(return_type %in% c(allowed_types, "")))
   stopifnot(all(param_types %in% c("I32", "I64")))
   stopifnot(is.function(fun))
   stopifnot(length(formals(fun)) == length(param_types))

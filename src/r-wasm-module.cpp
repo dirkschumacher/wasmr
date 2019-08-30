@@ -113,17 +113,17 @@ std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(Rcpp::List imports)
   if (Rf_isNull(module_names_sexp)) {
     return ret;
   }
-  Rcpp::CharacterVector module_names = module_names_sexp;
+  auto module_names = Rcpp::as<std::vector<std::string>>(module_names_sexp);
   for (int i = 0; i < module_names.size(); i++) {
-    std::string module_name = Rcpp::as<std::string>(module_names[i]);
+    std::string module_name = module_names[i];
     Rcpp::List functions = imports[module_name];
     SEXP function_names_sexp = functions.names();
     if (Rf_isNull(function_names_sexp)) {
       Rcpp::stop("All import functions need to be named.");
     }
-    Rcpp::CharacterVector function_names = function_names_sexp;
+    auto function_names = Rcpp::as<std::vector<std::string>>(function_names_sexp);
     for (int j = 0; j < function_names.size(); j++) {
-      std::string function_name = Rcpp::as<std::string>(function_names[i]);
+      std::string function_name = function_names[j];
       Rcpp::List typed_fun_list = functions[function_name];
       Rcpp::Function fun = typed_fun_list["fun"];
       wasmer_import_t import;
