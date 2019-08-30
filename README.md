@@ -70,12 +70,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min       lq       mean    median
-#>  instance$exports$fib(20)   71.290   79.051   161.1395   135.815
-#>                   fib(20) 7880.672 8635.832 13192.9194 10995.909
-#>          uq       max neval
-#>    161.0495   703.339   100
-#>  14706.2930 41949.392   100
+#>                      expr      min        lq      mean    median        uq
+#>  instance$exports$fib(20)   71.839   85.4315   160.723   134.723   152.919
+#>                   fib(20) 8021.899 8357.9975 12695.551 10462.002 14850.606
+#>        max neval
+#>   2128.002   100
+#>  41178.905   100
 ```
 
 ## Memory
@@ -140,7 +140,6 @@ instance$exports$sum(1, 5)
   - There is hardly any documentation except for the examples
   - `I32/I64` are mapped to `IntegerVector` and `F32/F64` to
     `NumericVector`. Currently no way to differentiate.
-  - Code can sometimes still crash R. Room for code improvements :)
   - I am still learning about `wasm` 🙈
   - WIP
 
@@ -151,12 +150,7 @@ instance$exports$sum(1, 5)
   - [wasmer](https://github.com/wasmerio/wasmer) - especially the C api
     and the tests give some good examples.
   - @jeroen ’s [rust template](https://github.com/r-rust/hellorust)
-  - @romainfrancois ’s
-    [altrepisode](https://github.com/romainfrancois/altrepisode) and
-    @jimhester ’s [vroom](https://github.com/r-lib/vroom) on how to use
-    ALTREP and C++.
-
-## Contribute
+    \*\#\# Contribute
 
 While this is work in progress, the best way to contribute is to test
 the package and write/comment on issues. Before sending a PR it would

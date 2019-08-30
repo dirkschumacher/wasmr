@@ -40,8 +40,8 @@ uint32_t wasm_get_memory_length(Rcpp::XPtr<wasmr::RcppWasmModule> module) {
 }
 
 // [[Rcpp::export]]
-SEXP wasm_get_memory_view(Rcpp::XPtr<wasmr::RcppWasmModule> module, uint32_t offset) {
-  return module->get_memory_view(offset);
+Rcpp::RawVector wasm_get_memory_as_raw_vec(Rcpp::XPtr<wasmr::RcppWasmModule> module, uint32_t offset) {
+  return module->get_memory_as_raw_vector(offset);
 }
 
 // [[Rcpp::export]]
@@ -52,4 +52,9 @@ void wasm_grow_memory(Rcpp::XPtr<wasmr::RcppWasmModule> module, uint32_t delta) 
 // [[Rcpp::export]]
 void wasm_set_memory(Rcpp::XPtr<wasmr::RcppWasmModule> module, uint32_t offset, Rcpp::IntegerVector indexes, Rcpp::RawVector values) {
   return module->set_memory(offset, indexes, values);
+}
+
+// [[Rcpp::export]]
+Rcpp::RawVector wasm_get_memory(Rcpp::XPtr<wasmr::RcppWasmModule> module, uint32_t offset, Rcpp::IntegerVector indexes) {
+  return module->get_memory(offset, indexes);
 }

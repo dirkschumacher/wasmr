@@ -3,7 +3,6 @@
 #include "helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include "r-memory-raw-view.h"
 
 namespace wasmr {
 
@@ -250,8 +249,15 @@ Rcpp::List RcppWasmModule::call_exported_function(std::string fun_name, Rcpp::Li
   return ret;
 };
 
-SEXP RcppWasmModule::get_memory_view(uint32_t offset = 0) {
-  return r_wasmer_memory_raw_view::make(&instance, offset);
+constexpr auto WASMER_PAGE_SIZE = 65 * 1000;
+
+Rcpp::RawVector RcppWasmModule::get_memory_as_raw_vector(uint32_t offset = 0) {
+  auto len = instance.get_memory_length() * WASMER_PAGE_SIZE;
+  uint8_t* memory_data = wasmer_memory_data(instance.get_wasmer_memory());
+  memory_data = memory_data + offset;
+  Rcpp::RawVector ret(len - offset);
+  std::copy(memory_data, memory_data + (len - offset), ret.begin());
+  return ret;
 };
 
 
@@ -262,6 +268,22 @@ void RcppWasmModule::set_memory(uint32_t offset, Rcpp::IntegerVector indexes, Rc
     Rcpp::as<std::vector<uint32_t>>(indexes_starting_at_0),
     Rcpp::as<std::vector<uint8_t>>(values)
   );
+}
+
+Rcpp::RawVector RcppWasmModule::get_memory(uint32_t offset, Rcpp::IntegerVector indexes) {
+  auto n = indexes.size();
+  uint8_t* memory_data = wasmer_memory_data(instance.get_wasmer_memory());
+  memory_data = memory_data + offset;
+  Rcpp::RawVector ret(n);
+  auto len = instance.get_memory_length() * WASMER_PAGE_SIZE;
+  for (auto i = 0; i < n; i++) {
+    auto index = indexes[i];
+    if (index > len) {
+      Rcpp::stop("Index out of bounds");
+    }
+    ret[i] = memory_data[index - 1];
+  }
+  return ret;
 }
 
 uint32_t RcppWasmModule::get_memory_length() {
