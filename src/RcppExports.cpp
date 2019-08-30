@@ -73,15 +73,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// wasm_get_memory_view
-SEXP wasm_get_memory_view(Rcpp::XPtr<wasmr::RcppWasmModule> module, uint32_t offset);
-RcppExport SEXP _wasmr_wasm_get_memory_view(SEXP moduleSEXP, SEXP offsetSEXP) {
+// wasm_get_memory_as_raw_vec
+Rcpp::RawVector wasm_get_memory_as_raw_vec(Rcpp::XPtr<wasmr::RcppWasmModule> module, uint32_t offset);
+RcppExport SEXP _wasmr_wasm_get_memory_as_raw_vec(SEXP moduleSEXP, SEXP offsetSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::XPtr<wasmr::RcppWasmModule> >::type module(moduleSEXP);
     Rcpp::traits::input_parameter< uint32_t >::type offset(offsetSEXP);
-    rcpp_result_gen = Rcpp::wrap(wasm_get_memory_view(module, offset));
+    rcpp_result_gen = Rcpp::wrap(wasm_get_memory_as_raw_vec(module, offset));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -109,6 +109,19 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// wasm_get_memory
+Rcpp::RawVector wasm_get_memory(Rcpp::XPtr<wasmr::RcppWasmModule> module, uint32_t offset, Rcpp::IntegerVector indexes);
+RcppExport SEXP _wasmr_wasm_get_memory(SEXP moduleSEXP, SEXP offsetSEXP, SEXP indexesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::XPtr<wasmr::RcppWasmModule> >::type module(moduleSEXP);
+    Rcpp::traits::input_parameter< uint32_t >::type offset(offsetSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type indexes(indexesSEXP);
+    rcpp_result_gen = Rcpp::wrap(wasm_get_memory(module, offset, indexes));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wasmr_wasm_init_module", (DL_FUNC) &_wasmr_wasm_init_module, 0},
@@ -117,15 +130,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wasmr_wasm_call_exported_function", (DL_FUNC) &_wasmr_wasm_call_exported_function, 3},
     {"_wasmr_wasm_get_exported_functions", (DL_FUNC) &_wasmr_wasm_get_exported_functions, 1},
     {"_wasmr_wasm_get_memory_length", (DL_FUNC) &_wasmr_wasm_get_memory_length, 1},
-    {"_wasmr_wasm_get_memory_view", (DL_FUNC) &_wasmr_wasm_get_memory_view, 2},
+    {"_wasmr_wasm_get_memory_as_raw_vec", (DL_FUNC) &_wasmr_wasm_get_memory_as_raw_vec, 2},
     {"_wasmr_wasm_grow_memory", (DL_FUNC) &_wasmr_wasm_grow_memory, 2},
     {"_wasmr_wasm_set_memory", (DL_FUNC) &_wasmr_wasm_set_memory, 4},
+    {"_wasmr_wasm_get_memory", (DL_FUNC) &_wasmr_wasm_get_memory, 3},
     {NULL, NULL, 0}
 };
 
-void init_wasmr_memory_raw_view(DllInfo* dll);
 RcppExport void R_init_wasmr(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
-    init_wasmr_memory_raw_view(dll);
 }

@@ -3,7 +3,6 @@
 #include "helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include "r-memory-raw-view.h"
 
 namespace wasmr {
 
@@ -81,21 +80,31 @@ void execute_r_fun_in_wasmer_void(r_fun_call_context* local_context, uint64_t* d
   r_wasm_import_function_compute(local_context, data);
 }
 
+wasmer_value_tag wasmer_value_from_str(const std::string& str) {
+  if (str == "I32") return wasmer_value_tag::WASM_I32;
+  if (str == "I64") return wasmer_value_tag::WASM_I64;
+  if (str == "F32") return wasmer_value_tag::WASM_F32;
+  if (str == "F64") return wasmer_value_tag::WASM_F64;
+  Rcpp::stop("Invalid wasm parameter type.");
+}
+
 std::vector<wasmer_value_tag> RcppWasmModule::to_wasmer_value_tags(Rcpp::CharacterVector vec) {
   std::vector<wasmer_value_tag> ret;
   int len = vec.size();
   for (int i = 0; i < len; i++) {
     std::string type = Rcpp::as<std::string>(vec[i]);
-    if (type == "I32") ret.push_back(wasmer_value_tag::WASM_I32);
-    if (type == "I64") ret.push_back(wasmer_value_tag::WASM_I64);
-    if (type == "F32") ret.push_back(wasmer_value_tag::WASM_F32);
-    if (type == "F64") ret.push_back(wasmer_value_tag::WASM_F64);
-  }
-  if (ret.size() != len) {
-    Rcpp::stop("Invalid wasm parameter type.");
+    ret.push_back(wasmer_value_from_str(type));
   }
   return ret;
 }
+
+#define WASMR_BUILD_FUNC_CALLBACK(CALLBACK_NAME)                               \
+  wasmer_trampoline_buffer_builder_add_callinfo_trampoline(                    \
+    tbb,                                                                       \
+    (wasmer_trampoline_callable_t *) CALLBACK_NAME,                            \
+    (void *) local_context,                                                    \
+    params_sig_vec.size() + 1                                                  \
+  )
 
 std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(Rcpp::List imports) {
   // TODO: can I also query the import definitions in the wasm file?
@@ -105,7 +114,7 @@ std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(Rcpp::List imports)
     return ret;
   }
   Rcpp::CharacterVector module_names = module_names_sexp;
-  for(int i = 0; i < module_names.size(); i++) {
+  for (int i = 0; i < module_names.size(); i++) {
     std::string module_name = Rcpp::as<std::string>(module_names[i]);
     Rcpp::List functions = imports[module_name];
     SEXP function_names_sexp = functions.names();
@@ -142,31 +151,17 @@ std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(Rcpp::List imports)
       auto return_sig_vec = to_wasmer_value_tags(typed_fun_list["return_type"]);
       r_fun_call_context* local_context = new r_fun_call_context(fun, params_sig_vec);
       wasmer_trampoline_buffer_builder_t* tbb = wasmer_trampoline_buffer_builder_new();
+
       unsigned long exec_r_fun_idx;
       bool is_void_return = return_sig_vec.size() == 0;
       bool is_float_return = return_sig_vec.size() == 1 && is_wasmer_numeric_value(return_sig_vec[0]);
       bool is_integer_return = return_sig_vec.size() == 1 && is_wasmer_integer_value(return_sig_vec[0]);
       if (is_void_return) {
-        exec_r_fun_idx = wasmer_trampoline_buffer_builder_add_callinfo_trampoline(
-          tbb,
-          (wasmer_trampoline_callable_t *) execute_r_fun_in_wasmer_void,
-          (void *) local_context,
-          params_sig_vec.size() + 1
-        );
+        exec_r_fun_idx = WASMR_BUILD_FUNC_CALLBACK(execute_r_fun_in_wasmer_void);
       } else if (is_float_return) {
-        exec_r_fun_idx = wasmer_trampoline_buffer_builder_add_callinfo_trampoline(
-          tbb,
-          (wasmer_trampoline_callable_t *) execute_r_fun_in_wasmer_double,
-          (void *) local_context,
-          params_sig_vec.size() + 1
-        );
+        exec_r_fun_idx = WASMR_BUILD_FUNC_CALLBACK(execute_r_fun_in_wasmer_double);
       } else if (is_integer_return)  {
-        exec_r_fun_idx = wasmer_trampoline_buffer_builder_add_callinfo_trampoline(
-          tbb,
-          (wasmer_trampoline_callable_t *) execute_r_fun_in_wasmer_int,
-          (void *) local_context,
-          params_sig_vec.size() + 1
-        );
+        exec_r_fun_idx = WASMR_BUILD_FUNC_CALLBACK(execute_r_fun_in_wasmer_int);
       } else {
         Rcpp::stop("Your input function has a wrong return type");
       }
@@ -195,6 +190,11 @@ std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(Rcpp::List imports)
   return ret;
 };
 
+#define WASMR_SET_PARAM_VALUE(TYPE, WASMER_TYPE, VAL)          \
+case wasmer_value_tag::WASMER_TYPE:                            \
+  param.value.TYPE = VAL;                                      \
+  break;
+
 Rcpp::List RcppWasmModule::call_exported_function(std::string fun_name, Rcpp::List arguments) {
   const wasmr::InstanceExportFunction& fun = instance.get_exported_function(fun_name);
   if (arguments.length() != fun.params_arity) {
@@ -206,18 +206,10 @@ Rcpp::List RcppWasmModule::call_exported_function(std::string fun_name, Rcpp::Li
     const auto& val = arguments[i];
     param.tag = fun.params_data_types[i];
     switch(param.tag) {
-    case wasmer_value_tag::WASM_F32:
-      param.value.F32 = (float)val;
-      break;
-    case wasmer_value_tag::WASM_F64:
-      param.value.F64 = (double)val;
-      break;
-    case wasmer_value_tag::WASM_I32:
-      param.value.I32 = (int32_t)val;
-      break;
-    case wasmer_value_tag::WASM_I64:
-      param.value.I64 = (int64_t)val;
-      break;
+    WASMR_SET_PARAM_VALUE(F32, WASM_F32, val);
+    WASMR_SET_PARAM_VALUE(F64, WASM_F64, val);
+    WASMR_SET_PARAM_VALUE(I32, WASM_I32, val);
+    WASMR_SET_PARAM_VALUE(I64, WASM_I64, val);
     default:
       Rcpp::stop("Unsupported type");
     }
@@ -250,8 +242,15 @@ Rcpp::List RcppWasmModule::call_exported_function(std::string fun_name, Rcpp::Li
   return ret;
 };
 
-SEXP RcppWasmModule::get_memory_view(uint32_t offset = 0) {
-  return r_wasmer_memory_raw_view::make(&instance, offset);
+constexpr auto WASMER_PAGE_SIZE = 65 * 1000;
+
+Rcpp::RawVector RcppWasmModule::get_memory_as_raw_vector(uint32_t offset = 0) {
+  auto len = instance.get_memory_length() * WASMER_PAGE_SIZE;
+  uint8_t* memory_data = wasmer_memory_data(instance.get_wasmer_memory());
+  memory_data = memory_data + offset;
+  Rcpp::RawVector ret(len - offset);
+  std::copy(memory_data, memory_data + (len - offset), ret.begin());
+  return ret;
 };
 
 
@@ -262,6 +261,22 @@ void RcppWasmModule::set_memory(uint32_t offset, Rcpp::IntegerVector indexes, Rc
     Rcpp::as<std::vector<uint32_t>>(indexes_starting_at_0),
     Rcpp::as<std::vector<uint8_t>>(values)
   );
+}
+
+Rcpp::RawVector RcppWasmModule::get_memory(uint32_t offset, Rcpp::IntegerVector indexes) {
+  auto n = indexes.size();
+  uint8_t* memory_data = wasmer_memory_data(instance.get_wasmer_memory());
+  memory_data = memory_data + offset;
+  Rcpp::RawVector ret(n);
+  auto len = instance.get_memory_length() * WASMER_PAGE_SIZE;
+  for (auto i = 0; i < n; i++) {
+    auto index = indexes[i];
+    if (index > len) {
+      Rcpp::stop("Index out of bounds");
+    }
+    ret[i] = memory_data[index - 1];
+  }
+  return ret;
 }
 
 uint32_t RcppWasmModule::get_memory_length() {

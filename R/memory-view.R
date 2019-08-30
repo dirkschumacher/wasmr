@@ -21,11 +21,14 @@ MemoryView <- R6::R6Class(
       private$wasm_instance_module <- wasm_instance_module
     },
     get = function(indexes) {
-      self$as_raw_vec()[indexes]
+      stopifnot(all(indexes >= 1))
+      indexes <- as.integer(indexes)
+      wasm_get_memory(private$wasm_instance_module, private$offset, indexes)
     },
     set = function(indexes, values) {
       stopifnot(is.raw(values), is.numeric(indexes), length(indexes) == length(values))
       indexes <- as.integer(indexes)
+      stopifnot(all(indexes >= 1))
       wasm_set_memory(private$wasm_instance_module, private$offset, indexes, values)
     },
     as_raw_vec = function() {
