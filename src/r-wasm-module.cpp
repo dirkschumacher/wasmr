@@ -80,18 +80,20 @@ void execute_r_fun_in_wasmer_void(r_fun_call_context* local_context, uint64_t* d
   r_wasm_import_function_compute(local_context, data);
 }
 
+wasmer_value_tag wasmer_value_from_str(const std::string& str) {
+  if (str == "I32") return wasmer_value_tag::WASM_I32;
+  if (str == "I64") return wasmer_value_tag::WASM_I64;
+  if (str == "F32") return wasmer_value_tag::WASM_F32;
+  if (str == "F64") return wasmer_value_tag::WASM_F64;
+  Rcpp::stop("Invalid wasm parameter type.");
+}
+
 std::vector<wasmer_value_tag> RcppWasmModule::to_wasmer_value_tags(Rcpp::CharacterVector vec) {
   std::vector<wasmer_value_tag> ret;
   int len = vec.size();
   for (int i = 0; i < len; i++) {
     std::string type = Rcpp::as<std::string>(vec[i]);
-    if (type == "I32") ret.push_back(wasmer_value_tag::WASM_I32);
-    if (type == "I64") ret.push_back(wasmer_value_tag::WASM_I64);
-    if (type == "F32") ret.push_back(wasmer_value_tag::WASM_F32);
-    if (type == "F64") ret.push_back(wasmer_value_tag::WASM_F64);
-  }
-  if (ret.size() != len) {
-    Rcpp::stop("Invalid wasm parameter type.");
+    ret.push_back(wasmer_value_from_str(type));
   }
   return ret;
 }
@@ -112,7 +114,7 @@ std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(Rcpp::List imports)
     return ret;
   }
   Rcpp::CharacterVector module_names = module_names_sexp;
-  for(int i = 0; i < module_names.size(); i++) {
+  for (int i = 0; i < module_names.size(); i++) {
     std::string module_name = Rcpp::as<std::string>(module_names[i]);
     Rcpp::List functions = imports[module_name];
     SEXP function_names_sexp = functions.names();
