@@ -27,7 +27,7 @@ void RcppWasmModule::finalize() {
   instance.destroy();
 };
 
-void RcppWasmModule::instantiate(Rcpp::RawVector bytes, Rcpp::List imports) {
+void RcppWasmModule::instantiate(Rcpp::RawVector bytes, const Rcpp::List imports) {
   if (bytes.size() <= 0) {
     Rcpp::stop("You need at least one byte");
   }
@@ -88,7 +88,7 @@ wasmer_value_tag wasmer_value_from_str(const std::string& str) {
   Rcpp::stop("Invalid wasm parameter type.");
 }
 
-std::vector<wasmer_value_tag> RcppWasmModule::to_wasmer_value_tags(Rcpp::CharacterVector vec) {
+std::vector<wasmer_value_tag> RcppWasmModule::to_wasmer_value_tags(const Rcpp::CharacterVector vec) {
   std::vector<wasmer_value_tag> ret;
   int len = vec.size();
   for (int i = 0; i < len; i++) {
@@ -106,7 +106,7 @@ std::vector<wasmer_value_tag> RcppWasmModule::to_wasmer_value_tags(Rcpp::Charact
     params_sig_vec.size() + 1                                                  \
   )
 
-std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(Rcpp::List imports) {
+std::vector<wasmer_import_t> RcppWasmModule::prepare_imports(const Rcpp::List imports) {
   // TODO: can I also query the import definitions in the wasm file?
   std::vector<wasmer_import_t> ret;
   SEXP module_names_sexp = Rcpp::wrap(imports.names());
@@ -195,7 +195,7 @@ case wasmer_value_tag::WASMER_TYPE:                            \
   param.value.TYPE = VAL;                                      \
   break;
 
-Rcpp::List RcppWasmModule::call_exported_function(std::string fun_name, Rcpp::List arguments) {
+Rcpp::List RcppWasmModule::call_exported_function(const std::string fun_name, const Rcpp::List arguments) {
   const wasmr::InstanceExportFunction& fun = instance.get_exported_function(fun_name);
   if (arguments.length() != fun.params_arity) {
     Rcpp::stop("The number of arguments is not correct");
@@ -244,7 +244,7 @@ Rcpp::List RcppWasmModule::call_exported_function(std::string fun_name, Rcpp::Li
 
 constexpr auto WASMER_PAGE_SIZE = 65 * 1000;
 
-Rcpp::RawVector RcppWasmModule::get_memory_as_raw_vector(uint32_t offset = 0) {
+Rcpp::RawVector RcppWasmModule::get_memory_as_raw_vector(const uint32_t offset = 0) const {
   auto len = instance.get_memory_length() * WASMER_PAGE_SIZE;
   uint8_t* memory_data = wasmer_memory_data(instance.get_wasmer_memory());
   memory_data = memory_data + offset;
@@ -254,7 +254,7 @@ Rcpp::RawVector RcppWasmModule::get_memory_as_raw_vector(uint32_t offset = 0) {
 };
 
 
-void RcppWasmModule::set_memory(uint32_t offset, Rcpp::IntegerVector indexes, Rcpp::RawVector values) {
+void RcppWasmModule::set_memory(const uint32_t offset, const Rcpp::IntegerVector indexes, const Rcpp::RawVector values) {
   Rcpp::IntegerVector indexes_starting_at_0 = indexes - 1;
   instance.set_memory(
     offset,
@@ -263,7 +263,7 @@ void RcppWasmModule::set_memory(uint32_t offset, Rcpp::IntegerVector indexes, Rc
   );
 }
 
-Rcpp::RawVector RcppWasmModule::get_memory(uint32_t offset, Rcpp::IntegerVector indexes) {
+Rcpp::RawVector RcppWasmModule::get_memory(const uint32_t offset, const Rcpp::IntegerVector indexes) {
   auto n = indexes.size();
   uint8_t* memory_data = wasmer_memory_data(instance.get_wasmer_memory());
   memory_data = memory_data + offset;
@@ -279,18 +279,18 @@ Rcpp::RawVector RcppWasmModule::get_memory(uint32_t offset, Rcpp::IntegerVector 
   return ret;
 }
 
-uint32_t RcppWasmModule::get_memory_length() {
+uint32_t RcppWasmModule::get_memory_length() const {
   return instance.get_memory_length();
 };
 
-void RcppWasmModule::grow_memory(uint32_t delta) {
+void RcppWasmModule::grow_memory(const uint32_t delta) {
   wasmer_result_t res = wasmer_memory_grow(instance.get_wasmer_memory(), delta);
   if (res != wasmer_result_t::WASMER_OK) {
     Rcpp::stop(wasmr::helpers::last_error());
   }
 };
 
-Rcpp::List RcppWasmModule::get_exported_functions() {
+Rcpp::List RcppWasmModule::get_exported_functions() const {
   std::vector<Rcpp::List> ret;
   auto as_int = [](const wasmer_value_tag& x) { return (int) x; };
   for (const auto& fun : instance.get_exported_functions()) {

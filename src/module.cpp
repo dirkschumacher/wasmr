@@ -3,7 +3,7 @@
 #include <stdexcept>
 namespace wasmr {
 
-void Module::compile(uint8_t *wasm_bytes, uint32_t wasm_bytes_len) {
+void Module::compile(uint8_t* wasm_bytes, const uint32_t wasm_bytes_len) {
   bool is_valid = wasmer_validate(wasm_bytes, wasm_bytes_len);
   if (!is_valid) {
     throw std::runtime_error("wasm module is not valid.");

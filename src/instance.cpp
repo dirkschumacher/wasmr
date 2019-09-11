@@ -38,7 +38,7 @@ namespace wasmr {
     Instance::init_exports_and_memory();
   };
 
-  void Instance::instantiate(std::vector<wasmer_import_t> imports) {
+  void Instance::instantiate(const std::vector<wasmer_import_t> imports) {
     imports_vec = imports;
     Instance::instantiate();
   };
@@ -102,12 +102,12 @@ namespace wasmr {
     return ret;
   }
 
-  const InstanceExportFunction& Instance::get_exported_function(std::string name) {
+  const InstanceExportFunction& Instance::get_exported_function(const std::string name) {
     // TODO: check for missing
     return exported_functions.at(name);
   };
 
-  std::vector<wasmer_value_t> Instance::call_exported_function(std::string fun_name, std::vector<wasmer_value_t> params) {
+  std::vector<wasmer_value_t> Instance::call_exported_function(const std::string fun_name, const std::vector<wasmer_value_t> params) {
     const wasmr::InstanceExportFunction& fun = Instance::get_exported_function(fun_name);
     std::vector<wasmer_value_t> results(fun.returns_arity);
     wasmer_export_t* exp = wasmer_exports_get(exports, fun.idx);
@@ -138,7 +138,7 @@ namespace wasmr {
     return results;
   };
 
-  void Instance::set_memory(uint32_t offset, const std::vector<uint32_t>& indexes, const std::vector<uint8_t>& values) {
+  void Instance::set_memory(const uint32_t offset, const std::vector<uint32_t>& indexes, const std::vector<uint8_t>& values) {
     wasmer_memory_write_u8(
       memory, offset,
       indexes.data(),
