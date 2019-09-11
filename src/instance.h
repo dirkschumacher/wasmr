@@ -23,15 +23,15 @@ struct InstanceExportFunction {
 class Instance {
 public:
   void instantiate();
-  void instantiate(std::vector<wasmer_import_t> imports);
-  void set_module(Module module);
+  void instantiate(const std::vector<wasmer_import_t> imports);
+  void set_module(const Module module);
   std::vector<InstanceExportFunction> get_exported_functions() const;
-  const InstanceExportFunction& get_exported_function(std::string name);
+  const InstanceExportFunction& get_exported_function(const std::string name);
   uint32_t get_memory_length() const;
-  std::vector<wasmer_value_t> call_exported_function(std::string fun_name, std::vector<wasmer_value_t> params);
+  std::vector<wasmer_value_t> call_exported_function(const std::string fun_name, std::vector<wasmer_value_t> params);
   wasmer_memory_t* get_wasmer_memory() const;
   wasmer_exports_t* get_wasmer_exports() const;
-  void set_memory(uint32_t offset, const std::vector<uint32_t>& indexes, const std::vector<uint8_t>& values);
+  void set_memory(const uint32_t offset, const std::vector<uint32_t>& indexes, const std::vector<uint8_t>& values);
   void destroy();
 
 private:
