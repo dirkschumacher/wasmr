@@ -1,24 +1,28 @@
 test_that("call functions", {
-  instance <- instantiate("../../inst/examples/sum.wasm")
+  file <- system.file("examples", "sum.wasm", package = "wasmr")
+  instance <- instantiate(file)
   res <- instance$exports$sum(1, 5)
   expect_equal(res, 6)
 })
 
 test_that("get the memory", {
-  instance <- instantiate("../../inst/examples/hello.wasm")
+  file <- system.file("examples", "hello.wasm", package = "wasmr")
+  instance <- instantiate(file)
   pointer <- instance$exports$hello()
   memory <- instance$memory$get_memory_view(pointer)
   expect_equal(rawToChar(memory$get(1:11)), "Hello world")
 })
 
 test_that("complex loop", {
-  instance <- instantiate("../../inst/examples/fib.wasm")
+  file <- system.file("examples", "fib.wasm", package = "wasmr")
+  instance <- instantiate(file)
   res <- instance$exports$fib(20)
   expect_equal(res, 6765)
 })
 
 test_that("grow memory", {
-  instance <- instantiate("../../inst/examples/hello.wasm")
+  file <- system.file("examples", "hello.wasm", package = "wasmr")
+  instance <- instantiate(file)
   len <- instance$memory$get_memory_length()
   instance$memory$grow(1)
   len2 <- instance$memory$get_memory_length()
@@ -37,7 +41,8 @@ test_that("import functions",{
       )
     )
   )
-  instance <- instantiate("../../inst/examples/sum_import.wasm", imports)
+  file <- system.file("examples", "sum_import.wasm", package = "wasmr")
+  instance <- instantiate(file, imports)
   res <- instance$exports$sum(1, 5)
   expect_equal(res, 6 * 2 + 42)
 })
@@ -62,14 +67,16 @@ test_that("import functions 2",{
       )
     )
   )
-  instance <- instantiate("../../inst/examples/two-imports.wasm", imports)
+  file <- system.file("examples", "two-imports.wasm", package = "wasmr")
+  instance <- instantiate(file, imports)
   res <- instance$exports$sum(1, 5)
   expect_equal(res, (1 + 5) * 2)
 })
 
 
 test_that("write to memory", {
-  instance <- instantiate("../../inst/examples/greet.wasm")
+  file <- system.file("examples", "greet.wasm", package = "wasmr")
+  instance <- instantiate(file)
   subject <- charToRaw("everyone")
   length_of_subject <- length(subject)
   input_pointer <- instance$exports$allocate(length_of_subject)
