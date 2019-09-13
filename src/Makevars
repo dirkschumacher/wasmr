@@ -1,14 +1,17 @@
 LIBDIR = myrustlib/target/release
 STATLIB = $(LIBDIR)/libmyrustlib.a
-PKG_LIBS = -L$(LIBDIR) -lmyrustlib -lwasmer_runtime_c_api -lresolv
+STATLIBWASMER = $(LIBDIR)/wasmer_runtime_c_api.a
+PKG_LIBS = -L$(LIBDIR) -lmyrustlib -lresolv -lwasmer_runtime_c_api
 
 #all: clean
 
-$(SHLIB): $(STATLIB)
+$(SHLIB): $(STATLIB) $(STATLIBWASMER)
 
 $(STATLIB):
-	cargo build --release -p wasmer-runtime-c-api --manifest-path=myrustlib/Cargo.toml
 	cargo build --release --manifest-path=myrustlib/Cargo.toml
 
+$(STATLIBWASMER):
+	cargo build --release -p wasmer-runtime-c-api --manifest-path=myrustlib/Cargo.toml
+
 #clean:
-#	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) myrustlib/target
+#	rm -Rf $(SHLIB) $(STATLIB) $(STATLIBWASMER) $(OBJECTS) myrustlib/target
