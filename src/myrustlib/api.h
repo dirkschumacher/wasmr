@@ -1,9 +1,8 @@
+#pragma once
 #include <stdint.h>
 #include "../wasmer.h"
 
-#ifdef __cplusplus
 extern "C" {
-#endif
 
 void wasmer_memory_write_u8(
     wasmer_memory_t* mem,
@@ -14,6 +13,4 @@ void wasmer_memory_write_u8(
     size_t data_length
 );
 
-#ifdef __cplusplus
 }
-#endif
