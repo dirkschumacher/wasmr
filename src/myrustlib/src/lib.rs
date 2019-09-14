@@ -8,7 +8,7 @@ use wasmer_runtime::Memory;
 pub struct wasmer_memory_t;
 
 #[no_mangle]
-pub extern "C" fn wasmer_memory_write_u8(
+pub extern fn wasmer_memory_write_u8(
   mem: *const wasmer_memory_t,
   offset: u32,
   indexes: *const u32,
