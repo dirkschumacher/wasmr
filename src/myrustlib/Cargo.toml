@@ -8,7 +8,7 @@ authors = ["Dirk Schumacher <mail@dirk-schumacher.net>"]
 crate-type = ["staticlib"]
 
 [dependencies]
-wasmer-runtime = "0.7.0"
-wasmer-runtime-core = "0.7.0"
-wasmer-runtime-c-api = "0.7.0"
+wasmer-runtime = "0.9.0"
+wasmer-runtime-core = "0.9.0"
+wasmer-runtime-c-api = "0.9.0"
 libc = "*"
