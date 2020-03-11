@@ -125,7 +125,6 @@ instance$exports$sum(1, 5)
 * No globals
 * There is hardly any documentation except for the examples
 * `I32/I64` are mapped to `IntegerVector` and `F32/F64` to `NumericVector`. Currently no way to differentiate.
-* I am still learning about `wasm` 🙈
 * WIP
 
 ## Inspiration and References

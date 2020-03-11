@@ -70,12 +70,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min        lq      mean    median        uq
-#>  instance$exports$fib(20)   71.839   85.4315   160.723   134.723   152.919
-#>                   fib(20) 8021.899 8357.9975 12695.551 10462.002 14850.606
-#>        max neval
-#>   2128.002   100
-#>  41178.905   100
+#>                      expr      min         lq       mean     median
+#>  instance$exports$fib(20)   71.179   130.7725   177.7441   144.4675
+#>                   fib(20) 8840.613 10961.8670 15165.8760 13807.6900
+#>         uq       max neval
+#>    189.764  1009.306   100
+#>  17443.602 38264.341   100
 ```
 
 ## Memory
@@ -140,7 +140,6 @@ instance$exports$sum(1, 5)
   - There is hardly any documentation except for the examples
   - `I32/I64` are mapped to `IntegerVector` and `F32/F64` to
     `NumericVector`. Currently no way to differentiate.
-  - I am still learning about `wasm` 🙈
   - WIP
 
 ## Inspiration and References
