@@ -70,12 +70,12 @@ microbenchmark::microbenchmark(
   fib(20)
 )
 #> Unit: microseconds
-#>                      expr      min         lq       mean     median
-#>  instance$exports$fib(20)   71.179   130.7725   177.7441   144.4675
-#>                   fib(20) 8840.613 10961.8670 15165.8760 13807.6900
+#>                      expr      min        lq       mean    median
+#>  instance$exports$fib(20)   71.143   88.4745   158.3407   139.814
+#>                   fib(20) 8037.195 9556.2085 13024.0362 10415.965
 #>         uq       max neval
-#>    189.764  1009.306   100
-#>  17443.602 38264.341   100
+#>    150.472  1019.363   100
+#>  14568.746 48506.287   100
 ```
 
 ## Memory
@@ -149,7 +149,8 @@ instance$exports$sum(1, 5)
   - [wasmer](https://github.com/wasmerio/wasmer) - especially the C api
     and the tests give some good examples.
   - @jeroen ’s [rust template](https://github.com/r-rust/hellorust)
-    \*\#\# Contribute
+
+## Contribute
 
 While this is work in progress, the best way to contribute is to test
 the package and write/comment on issues. Before sending a PR it would

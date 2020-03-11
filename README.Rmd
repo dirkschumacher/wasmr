@@ -132,7 +132,8 @@ instance$exports$sum(1, 5)
 * [wasmer Python](https://github.com/wasmerio/python-ext-wasm) - haven't tried it but looked at the API/examples
 * [wasmer](https://github.com/wasmerio/wasmer) - especially the C api and the tests give some good examples.
 * @jeroen 's [rust template](https://github.com/r-rust/hellorust)
-*## Contribute
+
+## Contribute
 
 While this is work in progress, the best way to contribute is to test the package and write/comment on issues. Before sending a PR it would great to post an issue first to discuss.
 
